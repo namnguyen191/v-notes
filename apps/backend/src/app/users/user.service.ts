@@ -14,4 +14,8 @@ export class UserService {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
+
+  find(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
+  }
 }

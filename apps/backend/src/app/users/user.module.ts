@@ -4,6 +4,9 @@ import { User, UserSchema } from './user.schema';
 import bcryptjs from 'bcryptjs';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { AuthService } from './auth.service';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -34,8 +37,13 @@ import { UserService } from './user.service';
         },
       },
     ]),
+    JwtModule.register({
+      global: true,
+      secret: '12345',
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [UserController, AuthController],
+  providers: [UserService, AuthService],
 })
 export class UserModule {}

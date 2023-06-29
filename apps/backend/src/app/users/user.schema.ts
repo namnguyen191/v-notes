@@ -18,12 +18,6 @@ export class User {
 
   @Prop({
     type: String,
-    required: [true, 'username is required'],
-  })
-  username!: string;
-
-  @Prop({
-    type: String,
     required: [true, 'password is required'],
     select: false,
   })
