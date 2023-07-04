@@ -15,9 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@v-notes/api/auth": ["libs/api/auth/src/index.ts"],
+      "@v-notes/api/core": ["libs/api/core/src/index.ts"],
+      "@v-notes/api/users": ["libs/api/users/src/index.ts"],
       "@v-notes/shared/api-interfaces": [
         "libs/shared/api-interfaces/src/index.ts"
-      ]
+      ],
+      "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"]
     },
     "strict": true
   },

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import validator from 'validator';
-import bcryptjs from 'bcryptjs';
+import { compare } from 'bcryptjs';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -24,7 +24,7 @@ export class User {
   password!: string;
 
   validatePassword(password: string): Promise<boolean> {
-    return bcryptjs.compare(this.password, password);
+    return compare(this.password, password);
   }
 }
 
