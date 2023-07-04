@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:backend:dev": "nx run backend:serve --configuration=development"
+    "start:backend:dev": "nx run backend:serve --configuration=development",
+    "lint:all": "nx affected:lint --all"
   },
   "private": true,
   "dependencies": {
