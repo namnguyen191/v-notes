@@ -22,10 +22,6 @@ export class User {
     select: false,
   })
   password!: string;
-
-  validatePassword(password: string): Promise<boolean> {
-    return compare(this.password, password);
-  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

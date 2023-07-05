@@ -1,7 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '@v-notes/api/users';
-import { SignUpResponse } from '@v-notes/shared/api-interfaces';
+import { AccessTokenResponse } from '@v-notes/shared/api-interfaces';
+import { compare, genSalt, hash } from 'bcryptjs';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +20,7 @@ export class AuthService {
   async signUp(args: {
     email: string;
     password: string;
-  }): Promise<SignUpResponse> {
+  }): Promise<AccessTokenResponse> {
     const { email, password } = args;
     const existingUser = await this.userService.find(email);
 
@@ -26,6 +33,21 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync({
         email,
+      }),
+    };
+  }
+
+  async signIn(args: { email: string; password: string }) {
+    const { email, password } = args;
+    const existingUser = await this.userService.findWithPassword(email);
+
+    if (!existingUser || !(await compare(password, existingUser.password))) {
+      throw new UnauthorizedException('email or password does not match');
+    }
+
+    return {
+      access_token: await this.jwtService.signAsync({
+        email: existingUser.email,
       }),
     };
   }

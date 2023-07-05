@@ -1,3 +1,3 @@
-export type SignUpResponse = {
+export type AccessTokenResponse = {
   access_token: string;
 };
