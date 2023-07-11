@@ -22,7 +22,10 @@ export class AuthService {
     password: string;
   }): Promise<AccessTokenResponse> {
     const { email, password } = args;
-    const existingUser = await this.userService.find(email);
+    const existingUser = await this.userService.find({
+      identifier: 'email',
+      value: email,
+    });
 
     if (existingUser) {
       throw new ConflictException('email already exists');
