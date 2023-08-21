@@ -4,11 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '@v-notes/api/users';
 import { AccessTokenResponse } from '@v-notes/shared/api-interfaces';
-import { compare, genSalt, hash } from 'bcryptjs';
-import { Model } from 'mongoose';
+import { compare } from 'bcryptjs';
 
 @Injectable()
 export class AuthService {

@@ -6,8 +6,8 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app/app.module';
 import { exit } from 'process';
+import { AppModule } from './app/app.module';
 
 const requiredEnvs = new Set<string>([
   'DATABASE_USER',
@@ -26,6 +26,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
+
+  app.enableCors();
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

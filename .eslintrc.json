@@ -17,8 +17,16 @@
                 "onlyDependOnLibsWithTags": ["scope:api"]
               },
               {
+                "sourceTag": "scope:main:frontend",
+                "onlyDependOnLibsWithTags": ["scope:frontend"]
+              },
+              {
                 "sourceTag": "scope:api",
                 "onlyDependOnLibsWithTags": ["scope:api", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:frontend",
+                "onlyDependOnLibsWithTags": ["scope:frontend", "scope:shared"]
               },
               {
                 "sourceTag": "scope:shared",

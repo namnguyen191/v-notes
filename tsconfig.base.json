@@ -22,7 +22,8 @@
       "@v-notes/shared/api-interfaces": [
         "libs/shared/api-interfaces/src/index.ts"
       ],
-      "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"]
+      "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"],
+      "@v-notes/frontend/auth": ["libs/frontend/auth/src/index.ts"]
     },
     "strict": true
   },
