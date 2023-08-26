@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import {
   AccessToken,
   GetCurrentuserResponse,
+  SignInRequestBody,
+  SignInResponse,
   SignUpRequestBody,
   SignUpResponse,
   UserFromJwt,
@@ -33,6 +35,12 @@ export class AuthService {
   signUpUser(userInfos: SignUpRequestBody): Observable<AccessToken> {
     return this._http
       .post<SignUpResponse>(`${env.NX_API_URL}/auth/signup`, userInfos)
+      .pipe(map((res) => res.access_token));
+  }
+
+  signInUser(userCredentials: SignInRequestBody): Observable<AccessToken> {
+    return this._http
+      .post<SignInResponse>(`${env.NX_API_URL}/auth/signin`, userCredentials)
       .pipe(map((res) => res.access_token));
   }
 

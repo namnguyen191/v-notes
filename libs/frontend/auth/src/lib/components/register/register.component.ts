@@ -6,14 +6,27 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { isControlInvalid, matchValues } from '@v-notes/shared/helpers';
-import { ButtonModule, InputModule } from 'carbon-components-angular';
+import {
+  ButtonModule,
+  InputModule,
+  LinkModule,
+} from 'carbon-components-angular';
+import { authRoutes } from '../../lib.routes';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'v-notes-register',
   standalone: true,
-  imports: [CommonModule, ButtonModule, InputModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    InputModule,
+    ReactiveFormsModule,
+    RouterModule,
+    LinkModule,
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +35,7 @@ export class RegisterComponent {
   private _authService: AuthService = inject(AuthService);
 
   isControlInvalid = isControlInvalid;
+  authRoutes = authRoutes;
 
   registrationForm!: FormGroup<{
     email: FormControl<string>;

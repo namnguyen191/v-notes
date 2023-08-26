@@ -11,4 +11,7 @@ export type SignUpRequestBody = {
   password: string;
 };
 
+export type SignInRequestBody = SignUpRequestBody;
+
 export type SignUpResponse = AccessTokenResponse;
+export type SignInResponse = AccessTokenResponse;

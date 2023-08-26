@@ -1,10 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
 import { UserCredentialsDto } from '@v-notes/api/users';
-import {
-  AccessTokenResponse,
-  SignUpResponse,
-} from '@v-notes/shared/api-interfaces';
+import { SignInResponse, SignUpResponse } from '@v-notes/shared/api-interfaces';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -17,7 +14,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  async signIn(@Body() body: UserCredentialsDto): Promise<AccessTokenResponse> {
+  async signIn(@Body() body: UserCredentialsDto): Promise<SignInResponse> {
     return await this.authService.signIn(body);
   }
 }
