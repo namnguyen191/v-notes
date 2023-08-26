@@ -1,10 +1,9 @@
 import { Route } from '@angular/router';
-import { authModulePath } from '@v-notes/frontend/auth';
 
 export const appRoutes: Route[] = [
   {
-    path: authModulePath,
+    path: '',
     loadChildren: () =>
-      import('@v-notes/frontend/auth').then((m) => m.FrontendAuthModule),
+      import('@v-notes/frontend/core').then((m) => m.FrontendCoreModule),
   },
 ];

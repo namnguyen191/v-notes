@@ -1,9 +1,10 @@
 import { Route } from '@angular/router';
-import { generateRoutesFromPaths } from '@v-notes/shared/helpers';
+import {
+  authModulePath,
+  generateRoutesFromPaths,
+} from '@v-notes/shared/helpers';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-
-export const authModulePath = 'auth';
 
 const paths = {
   login: 'login',

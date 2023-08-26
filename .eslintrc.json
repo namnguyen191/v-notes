@@ -17,16 +17,20 @@
                 "onlyDependOnLibsWithTags": ["scope:api"]
               },
               {
-                "sourceTag": "scope:main:frontend",
-                "onlyDependOnLibsWithTags": ["scope:frontend"]
-              },
-              {
                 "sourceTag": "scope:api",
                 "onlyDependOnLibsWithTags": ["scope:api", "scope:shared"]
               },
               {
-                "sourceTag": "scope:frontend",
+                "sourceTag": "scope:main:frontend",
+                "onlyDependOnLibsWithTags": ["scope:core:frontend"]
+              },
+              {
+                "sourceTag": "scope:core:frontend",
                 "onlyDependOnLibsWithTags": ["scope:frontend", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:frontend",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
               },
               {
                 "sourceTag": "scope:shared",
