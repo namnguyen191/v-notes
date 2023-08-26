@@ -1,0 +1,38 @@
+@use '@carbon/colors';
+@use '@carbon/layout';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: colors.$blue-30;
+
+  .logo {
+    width: 200px;
+  }
+
+  .register-form {
+    &__title {
+      margin-bottom: layout.$spacing-05;
+    }
+
+    &__container {
+      box-shadow: 10px 5px 5px rgba($color: colors.$blue-60, $alpha: 0.2);
+      background-color: colors.$cool-gray-10;
+      padding: layout.$spacing-06 layout.$spacing-07;
+    }
+
+    &__inputs-container {
+      display: flex;
+      gap: layout.$spacing-06;
+      flex-direction: column;
+
+      button {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+}

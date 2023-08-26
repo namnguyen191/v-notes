@@ -1,0 +1,62 @@
+<img src="assets/logo/svg/color-no-bg.svg" alt="logo" class="logo" />
+<form
+  [formGroup]="registrationForm"
+  class="register-form__container"
+  (ngSubmit)="onRegistrationFormSubmit()"
+>
+  <h2 class="register-form__title">Register to V-Notes</h2>
+  <div class="register-form__inputs-container">
+    <cds-label
+      [invalid]="isControlInvalid(registrationForm.controls.email)"
+      [invalidText]="'This is an invalid email'"
+    >
+      Email
+      <input
+        cdsText
+        [size]="'md'"
+        [invalid]="isControlInvalid(registrationForm.controls.email)"
+        [theme]="'light'"
+        [placeholder]="'john.smith@mail.com'"
+        [autocomplete]="false"
+        [formControl]="registrationForm.controls.email"
+        required
+      />
+    </cds-label>
+    <cds-label
+      [invalid]="isControlInvalid(registrationForm.controls.password)"
+      invalidText="Invalid password"
+    >
+      Password
+      <input
+        type="password"
+        cdsText
+        size="md"
+        [invalid]="isControlInvalid(registrationForm.controls.password)"
+        [theme]="'light'"
+        [placeholder]="'Your SIN number would be good'"
+        [formControl]="registrationForm.controls.password"
+        required
+      />
+    </cds-label>
+    <cds-label
+      [invalid]="isControlInvalid(registrationForm.controls.confirmedPassword)"
+      [invalidText]="'Confirmed password does not match'"
+    >
+      Confirm Password
+      <input
+        type="password"
+        cdsText
+        [size]="'md'"
+        [invalid]="
+          isControlInvalid(registrationForm.controls.confirmedPassword)
+        "
+        [theme]="'light'"
+        [placeholder]="'Same as your banking password'"
+        [formControl]="registrationForm.controls.confirmedPassword"
+        required
+      />
+    </cds-label>
+    <button cdsButton type="submit">Sign up</button>
+    <button cdsButton="ghost">Sign in</button>
+  </div>
+</form>

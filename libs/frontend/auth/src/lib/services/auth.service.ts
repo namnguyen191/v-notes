@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  AccessToken,
   GetCurrentuserResponse,
+  SignUpRequestBody,
+  SignUpResponse,
   UserFromJwt,
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 type CurrentUser = UserFromJwt;
 
@@ -25,6 +28,16 @@ export class AuthService {
     return this._http.get<GetCurrentuserResponse>(
       `${env.NX_API_URL}/users/whoami`
     );
+  }
+
+  signUpUser(userInfos: SignUpRequestBody): Observable<AccessToken> {
+    return this._http
+      .post<SignUpResponse>(`${env.NX_API_URL}/auth/signup`, userInfos)
+      .pipe(map((res) => res.access_token));
+  }
+
+  setToken(token: AccessToken): void {
+    localStorage.setItem('user-token', token);
   }
 
   setCurrentUser(user: CurrentUser | null): void {
