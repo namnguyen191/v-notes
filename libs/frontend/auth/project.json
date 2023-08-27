@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/frontend/auth/src",
   "prefix": "v-notes",
-  "tags": ["scope:frontend"],
+  "tags": ["scope:frontend:feature"],
   "projectType": "library",
   "targets": {
     "test": {

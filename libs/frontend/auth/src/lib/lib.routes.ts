@@ -17,10 +17,12 @@ export const frontendAuthRoutes: Route[] = [
   {
     path: paths.login,
     component: LoginComponent,
+    title: 'Login',
   },
   {
     path: paths.register,
     component: RegisterComponent,
+    title: 'Register',
   },
   {
     path: '**',

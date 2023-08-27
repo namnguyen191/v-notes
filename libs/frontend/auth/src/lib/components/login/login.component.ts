@@ -72,7 +72,12 @@ export class LoginComponent {
         password: this.loginForm.controls.password.value,
       })
       .subscribe({
-        next: (token) => this._authService.setToken(token),
+        next: (token) => {
+          this._authService.setToken(token);
+          this._authService
+            .fetchCurrentUser()
+            .subscribe((usr) => this._authService.setCurrentUser(usr));
+        },
         error: (err) => {
           if (err instanceof HttpErrorResponse) {
             if (err.status === HttpStatusCode.Unauthorized) {

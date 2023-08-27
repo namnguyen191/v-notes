@@ -1,16 +1,16 @@
 {
-  "name": "frontend-core",
+  "name": "frontend-shared",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/frontend/core/src",
+  "sourceRoot": "libs/frontend/shared/src",
   "prefix": "lib",
-  "tags": ["scope:core:frontend"],
+  "tags": ["scope:frontend:shared"],
   "projectType": "library",
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/frontend/core/jest.config.ts",
+        "jestConfig": "libs/frontend/shared/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -25,8 +25,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/frontend/core/**/*.ts",
-          "libs/frontend/core/**/*.html"
+          "libs/frontend/shared/**/*.ts",
+          "libs/frontend/shared/**/*.html"
         ]
       }
     }

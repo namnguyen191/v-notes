@@ -1,2 +1,2 @@
-export * from './lib/frontend-auth.module';
 export * from './lib/lib.routes';
+export * from './lib/services/auth.service';

@@ -24,7 +24,7 @@
         "libs/shared/api-interfaces/src/index.ts"
       ],
       "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"],
-      "@v-notes/frontend/core": ["libs/frontend/core/src/index.ts"]
+      "@v-notes/frontend/shared": ["libs/frontend/shared/src/index.ts"]
     },
     "strict": true
   },

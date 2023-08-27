@@ -81,7 +81,12 @@ export class RegisterComponent {
         password: this.registrationForm.controls.password.value,
       })
       .subscribe({
-        next: (accessToken) => this._authService.setToken(accessToken),
+        next: (accessToken) => {
+          this._authService.setToken(accessToken);
+          this._authService
+            .fetchCurrentUser()
+            .subscribe((usr) => this._authService.setCurrentUser(usr));
+        },
         error: (err) => {
           console.log('Something went wrong signing up user: ', err);
         },

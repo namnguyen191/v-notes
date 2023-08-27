@@ -1,9 +1,15 @@
 import { Route } from '@angular/router';
+import { frontendAuthRoutes } from '@v-notes/frontend/auth';
+import { authModulePath } from '@v-notes/shared/helpers';
 
 export const appRoutes: Route[] = [
   {
-    path: '',
-    loadChildren: () =>
-      import('@v-notes/frontend/core').then((m) => m.FrontendCoreModule),
+    path: authModulePath,
+    children: frontendAuthRoutes,
+  },
+  {
+    path: '**',
+    redirectTo: authModulePath,
+    pathMatch: 'full',
   },
 ];

@@ -22,14 +22,21 @@
               },
               {
                 "sourceTag": "scope:main:frontend",
-                "onlyDependOnLibsWithTags": ["scope:core:frontend"]
+                "onlyDependOnLibsWithTags": [
+                  "scope:frontend:shared",
+                  "scope:frontend:feature",
+                  "scope:shared"
+                ]
               },
               {
-                "sourceTag": "scope:core:frontend",
-                "onlyDependOnLibsWithTags": ["scope:frontend", "scope:shared"]
+                "sourceTag": "scope:frontend:feature",
+                "onlyDependOnLibsWithTags": [
+                  "scope:frontend:shared",
+                  "scope:shared"
+                ]
               },
               {
-                "sourceTag": "scope:frontend",
+                "sourceTag": "scope:frontend:shared",
                 "onlyDependOnLibsWithTags": ["scope:shared"]
               },
               {
