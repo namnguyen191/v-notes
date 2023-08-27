@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { userTokenKey } from '@v-notes/frontend/shared';
 import {
   AccessToken,
   GetCurrentuserResponse,
@@ -10,7 +11,7 @@ import {
   UserFromJwt,
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
 
 type CurrentUser = UserFromJwt;
 
@@ -24,7 +25,17 @@ export class AuthService {
     CurrentUser | null | undefined
   > = new BehaviorSubject<CurrentUser | null | undefined>(undefined);
 
-  currentUser$ = this._currentUserSubject$.asObservable();
+  currentUser$ = this._currentUserSubject$.asObservable().pipe(
+    switchMap((curUsr) => {
+      const token: string | null = localStorage.getItem(userTokenKey);
+      if (curUsr === undefined && token) {
+        return this.fetchCurrentUser();
+      }
+
+      return of(null);
+    })
+  );
+  isLoggedIn$ = this.currentUser$.pipe(map((currentUser) => !!currentUser));
 
   fetchCurrentUser(): Observable<CurrentUser> {
     return this._http.get<GetCurrentuserResponse>(
@@ -45,7 +56,7 @@ export class AuthService {
   }
 
   setToken(token: AccessToken): void {
-    localStorage.setItem('user-token', token);
+    localStorage.setItem(userTokenKey, token);
   }
 
   setCurrentUser(user: CurrentUser | null): void {

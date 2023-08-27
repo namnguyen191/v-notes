@@ -1,2 +1,1 @@
-export * from './lib/frontend-shared.module';
-export * from './lib/interceptors/auth.interceptor';
+export * from './lib/constants/local-storage-keys';

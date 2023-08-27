@@ -4,7 +4,7 @@ import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
 } from '@angular/router';
-import { authInterceptor } from '@v-notes/frontend/shared';
+import { authInterceptor } from '@v-notes/frontend/auth';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
