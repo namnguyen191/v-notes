@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 export class CreateBoardRequestBody {
@@ -8,3 +9,10 @@ export class CreateBoardRequestBody {
 export type GetBoardByIdParams = {
   id: string;
 };
+
+export class BoardDto {
+  @Expose()
+  title!: string;
+}
+
+export type GetCurrenUserBoardsResponse = BoardDto[];
