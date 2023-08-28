@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ApiAuthModule } from '@v-notes/api/auth';
 import { ApiUsersModule } from '@v-notes/api/users';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ApiBoardModule } from 'api/board';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ),
     ApiUsersModule,
     ApiAuthModule,
+    ApiBoardModule,
   ],
 })
 export class ApiCoreModule {}

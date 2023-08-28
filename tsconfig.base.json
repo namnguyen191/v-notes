@@ -20,12 +20,13 @@
       "@v-notes/api/shared": ["libs/api/shared/src/index.ts"],
       "@v-notes/api/users": ["libs/api/users/src/index.ts"],
       "@v-notes/frontend/auth": ["libs/frontend/auth/src/index.ts"],
+      "@v-notes/frontend/board": ["libs/frontend/board/src/index.ts"],
       "@v-notes/frontend/shared": ["libs/frontend/shared/src/index.ts"],
       "@v-notes/shared/api-interfaces": [
         "libs/shared/api-interfaces/src/index.ts"
       ],
       "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"],
-      "@v-notes/frontend/board": ["libs/frontend/board/src/index.ts"]
+      "api/board": ["libs/api/board/src/index.ts"]
     },
     "strict": true
   },

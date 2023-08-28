@@ -6,6 +6,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import { MongoDBExceptionFilter } from '@v-notes/api/core';
 import { exit } from 'process';
 import { AppModule } from './app/app.module';
 
@@ -26,6 +27,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
+
+  app.useGlobalFilters(new MongoDBExceptionFilter());
 
   app.enableCors();
 
