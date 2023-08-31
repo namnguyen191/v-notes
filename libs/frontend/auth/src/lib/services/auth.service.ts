@@ -11,7 +11,7 @@ import {
   UserFromJwt,
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
-import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 type CurrentUser = UserFromJwt;
 
@@ -25,16 +25,7 @@ export class AuthService {
     CurrentUser | null | undefined
   > = new BehaviorSubject<CurrentUser | null | undefined>(undefined);
 
-  currentUser$ = this._currentUserSubject$.asObservable().pipe(
-    switchMap((curUsr) => {
-      const token: string | null = localStorage.getItem(userTokenKey);
-      if (curUsr === undefined && token) {
-        return this.fetchCurrentUser();
-      }
-
-      return of(null);
-    })
-  );
+  currentUser$ = this._currentUserSubject$.asObservable();
   isLoggedIn$ = this.currentUser$.pipe(map((currentUser) => !!currentUser));
 
   fetchCurrentUser(): Observable<CurrentUser> {

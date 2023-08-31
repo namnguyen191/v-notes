@@ -6,19 +6,19 @@ import {
 import { MainBoardComponent } from './components/main-board/main-board.component';
 
 const paths = {
-  board: 'borad',
+  mainBoard: 'main-board',
 } as const;
 
 export const boardRoutes = generateRoutesFromPaths(paths, boardModulePath);
 
 export const frontendBoardRoutes: Route[] = [
   {
-    path: paths.board,
+    path: paths.mainBoard,
     component: MainBoardComponent,
   },
   {
     path: '**',
-    redirectTo: paths.board,
+    redirectTo: paths.mainBoard,
     pathMatch: 'full',
   },
 ];
