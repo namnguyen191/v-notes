@@ -2,5 +2,11 @@
   (boardTitleAdded)="onBoardTitleAdded($event)"
 ></lib-inline-form>
 <ng-container *ngFor="let board of currentUserBoards$ | async">
-  <a [@enterAnimation] class="board"> {{ board.title }} </a>
+  <a
+    [routerLink]="boardRoutes.board({ id: '1' })"
+    [@enterAnimation]
+    class="board"
+  >
+    {{ board.title }}
+  </a>
 </ng-container>

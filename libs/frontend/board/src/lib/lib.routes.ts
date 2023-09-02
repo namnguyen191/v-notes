@@ -1,7 +1,6 @@
 import { Route } from '@angular/router';
 import { boardPaths } from '@v-notes/frontend/shared';
 import { BoardComponent } from './board.component';
-import { MainBoardComponent } from './components/main-board/main-board.component';
 
 export const frontendBoardRoutes: Route[] = [
   {
@@ -10,7 +9,18 @@ export const frontendBoardRoutes: Route[] = [
     children: [
       {
         path: boardPaths.mainBoard,
-        component: MainBoardComponent,
+        loadComponent: () =>
+          import('./components/main-board/main-board.component').then(
+            (mod) => mod.MainBoardComponent
+          ),
+      },
+      {
+        path: boardPaths.board,
+        loadComponent: () =>
+          import('./components/board/board.component').then(
+            (mod) => mod.BoardComponent
+          ),
+        pathMatch: 'full',
       },
       {
         path: '**',

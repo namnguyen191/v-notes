@@ -12,8 +12,17 @@ export const generateRoutesFromPaths = <
   paths: TPaths,
   modulePath: TModulePath
 ): RoutesFromPath<TPaths, TModulePath> => {
-  return Object.entries(paths).reduce(
-    (acc, [key, val]) => ({ ...acc, [key]: `/${modulePath}/${val}` }),
-    {}
-  ) as RoutesFromPath<TPaths, TModulePath>;
+  return Object.entries(paths).reduce((acc, [key, val]) => {
+    if (val.includes(':')) {
+      const routeFn = (params: Record<string, string>) => {
+        for (const [paramKey, paramVal] of Object.entries(params)) {
+          val = val.replace(`:${paramKey}`, paramVal);
+        }
+
+        return `/${modulePath}/${val}`;
+      };
+      return { ...acc, [key]: routeFn };
+    }
+    return { ...acc, [key]: `/${modulePath}/${val}` };
+  }, {}) as RoutesFromPath<TPaths, TModulePath>;
 };
