@@ -1,0 +1,30 @@
+<form
+  [@enterAnimation]
+  [formGroup]="boardForm"
+  class="inline-form__container"
+  (ngSubmit)="onSubmit()"
+>
+  <span class="inline-form__title" *ngIf="!isEditMode()"
+    >Create a new board</span
+  >
+  <cds-label
+    *ngIf="isEditMode()"
+    [@enterAnimation]
+    [invalid]="isControlInvalid(boardForm.controls.title)"
+    [invalidText]="'Please enter a title'"
+    class="inline-form__input"
+  >
+    Title
+    <input
+      #boardTitleInput
+      cdsText
+      [size]="'md'"
+      [invalid]="isControlInvalid(boardForm.controls.title)"
+      [theme]="'light'"
+      [placeholder]="'My title'"
+      [autocomplete]="false"
+      [formControl]="boardForm.controls.title"
+      required
+    />
+  </cds-label>
+</form>

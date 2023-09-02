@@ -1,17 +1,20 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { authRoutes } from '@v-notes/frontend/shared';
+import { Observable, map } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = (): Observable<boolean> => {
+export const authGuard: CanActivateFn = (): Observable<boolean | UrlTree> => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   return authService.isLoggedIn$.pipe(
-    tap((isLoggedIn) => {
+    map((isLoggedIn) => {
       if (!isLoggedIn) {
-        router.navigateByUrl('/');
+        return router.parseUrl(authRoutes.login);
       }
+
+      return isLoggedIn;
     })
   );
 };

@@ -1,11 +1,12 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
 } from '@angular/router';
 import { AuthService, authInterceptor } from '@v-notes/frontend/auth';
-import { Observable, map } from 'rxjs';
+import { EMPTY, Observable, catchError, map } from 'rxjs';
 import { appRoutes } from './app.routes';
 
 function initializeAppFactory(
@@ -14,8 +15,11 @@ function initializeAppFactory(
   return () =>
     authService.fetchCurrentUser().pipe(
       map((user) => {
-        console.log('Setting current user...');
         authService.setCurrentUser(user);
+      }),
+      catchError(() => {
+        authService.setCurrentUser(null);
+        return EMPTY;
       })
     );
 }
@@ -30,5 +34,6 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [AuthService],
     },
+    provideAnimations(),
   ],
 };

@@ -16,7 +16,7 @@ export class BoardController {
   constructor(private readonly boardService: ApiBoardService) {}
 
   @Post()
-  async createPost(
+  async createBoard(
     @CurrentUser() user: UserFromJwt,
     @Body() body: CreateBoardRequestBody
   ): Promise<void> {

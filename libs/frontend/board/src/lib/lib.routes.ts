@@ -1,24 +1,27 @@
 import { Route } from '@angular/router';
-import {
-  boardModulePath,
-  generateRoutesFromPaths,
-} from '@v-notes/shared/helpers';
+import { boardPaths } from '@v-notes/frontend/shared';
+import { BoardComponent } from './board.component';
 import { MainBoardComponent } from './components/main-board/main-board.component';
-
-const paths = {
-  mainBoard: 'main-board',
-} as const;
-
-export const boardRoutes = generateRoutesFromPaths(paths, boardModulePath);
 
 export const frontendBoardRoutes: Route[] = [
   {
-    path: paths.mainBoard,
-    component: MainBoardComponent,
+    path: '',
+    component: BoardComponent,
+    children: [
+      {
+        path: boardPaths.mainBoard,
+        component: MainBoardComponent,
+      },
+      {
+        path: '**',
+        redirectTo: boardPaths.mainBoard,
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '**',
-    redirectTo: paths.mainBoard,
+    redirectTo: '',
     pathMatch: 'full',
   },
 ];

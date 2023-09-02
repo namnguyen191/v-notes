@@ -1,0 +1,25 @@
+<div
+  [cdsTheme]="sideNavTheme"
+  routerLinkActive
+  #rla="routerLinkActive"
+  [routerLinkActiveOptions]="{ exact: true }"
+>
+  <cds-sidenav>
+    <cds-sidenav-item
+      [active]="rla.isActive"
+      [routerLink]="boardRoutes.mainBoard"
+      >Main board</cds-sidenav-item
+    >
+    <cds-sidenav-item>
+      <svg cdsIcon="fade" size="16"></svg>
+      Link
+    </cds-sidenav-item>
+    <cds-sidenav-menu title="Category title">
+      <svg cdsIcon="fade" icon size="16"></svg>
+      <cds-sidenav-item>Link</cds-sidenav-item>
+      <cds-sidenav-item>Link</cds-sidenav-item>
+      <cds-sidenav-item>Link</cds-sidenav-item>
+    </cds-sidenav-menu>
+  </cds-sidenav>
+</div>
+<router-outlet></router-outlet>

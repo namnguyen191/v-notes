@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { authGuard, frontendAuthRoutes } from '@v-notes/frontend/auth';
-import { authModulePath } from '@v-notes/shared/helpers';
+import { authModulePath } from '@v-notes/frontend/shared';
 
 export const appRoutes: Route[] = [
   {

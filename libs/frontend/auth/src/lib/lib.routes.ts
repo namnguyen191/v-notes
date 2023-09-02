@@ -1,32 +1,22 @@
 import { Route } from '@angular/router';
-import {
-  authModulePath,
-  generateRoutesFromPaths,
-} from '@v-notes/shared/helpers';
+import { authPaths } from '@v-notes/frontend/shared';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 
-const paths = {
-  login: 'login',
-  register: 'register',
-} as const;
-
-export const authRoutes = generateRoutesFromPaths(paths, authModulePath);
-
 export const frontendAuthRoutes: Route[] = [
   {
-    path: paths.login,
+    path: authPaths.login,
     component: LoginComponent,
     title: 'Login',
   },
   {
-    path: paths.register,
+    path: authPaths.register,
     component: RegisterComponent,
     title: 'Register',
   },
   {
     path: '**',
-    redirectTo: paths.login,
+    redirectTo: authPaths.login,
     pathMatch: 'full',
   },
 ];

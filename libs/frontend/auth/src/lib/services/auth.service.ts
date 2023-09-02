@@ -26,7 +26,9 @@ export class AuthService {
   > = new BehaviorSubject<CurrentUser | null | undefined>(undefined);
 
   currentUser$ = this._currentUserSubject$.asObservable();
-  isLoggedIn$ = this.currentUser$.pipe(map((currentUser) => !!currentUser));
+  isLoggedIn$ = this._currentUserSubject$
+    .asObservable()
+    .pipe(map((currentUser) => !!currentUser));
 
   fetchCurrentUser(): Observable<CurrentUser> {
     return this._http.get<GetCurrentuserResponse>(

@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  padding-left: 16rem;
+
+  ::ng-deep {
+    .cds--side-nav {
+      top: 48px;
+    }
+  }
+}

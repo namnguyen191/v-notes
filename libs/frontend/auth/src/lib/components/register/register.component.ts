@@ -7,13 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { authRoutes } from '@v-notes/frontend/shared';
 import { isControlInvalid, matchValues } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
   InputModule,
   LinkModule,
 } from 'carbon-components-angular';
-import { authRoutes } from '../../lib.routes';
 import { AuthService } from '../../services/auth.service';
 
 @Component({

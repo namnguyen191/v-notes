@@ -1,20 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { authRoutes, boardRoutes } from '@v-notes/frontend/shared';
 import { isControlInvalid } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
   InputModule,
   LinkModule,
 } from 'carbon-components-angular';
-import { authRoutes } from '../../lib.routes';
+import { take, tap } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -32,8 +38,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private _authService: AuthService = inject(AuthService);
+  private _router: Router = inject(Router);
 
   isControlInvalid = isControlInvalid;
   authRoutes = authRoutes;
@@ -45,6 +52,19 @@ export class LoginComponent {
 
   constructor() {
     this._initializeForm();
+  }
+
+  ngOnInit(): void {
+    this._authService.isLoggedIn$
+      .pipe(
+        take(1),
+        tap((isLoggedIn) => {
+          if (isLoggedIn) {
+            this._router.navigateByUrl(boardRoutes.mainBoard);
+          }
+        })
+      )
+      .subscribe();
   }
 
   private _initializeForm(): void {
@@ -74,9 +94,10 @@ export class LoginComponent {
       .subscribe({
         next: (token) => {
           this._authService.setToken(token);
-          this._authService
-            .fetchCurrentUser()
-            .subscribe((usr) => this._authService.setCurrentUser(usr));
+          this._authService.fetchCurrentUser().subscribe((usr) => {
+            this._authService.setCurrentUser(usr);
+            this._router.navigateByUrl(`/board`);
+          });
         },
         error: (err) => {
           if (err instanceof HttpErrorResponse) {
