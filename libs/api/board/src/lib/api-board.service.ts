@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '@v-notes/api/users';
 import { Model } from 'mongoose';
@@ -33,5 +33,25 @@ export class ApiBoardService {
       user,
     });
     return userBoards;
+  }
+
+  async getByTitle(args: { useremail: string; title: string }): Promise<Board> {
+    const { useremail, title } = args;
+    const user = await this.userService.find({
+      identifier: 'email',
+      value: useremail,
+    });
+    const userBoard = await this.boardModel
+      .findOne({
+        user,
+        title,
+      })
+      .exec();
+
+    if (!userBoard) {
+      throw new NotFoundException();
+    }
+
+    return userBoard;
   }
 }

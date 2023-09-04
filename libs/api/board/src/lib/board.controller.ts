@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { AuthGuard, CurrentUser } from '@v-notes/api/shared';
 import {
   BoardDto,
   CreateBoardRequestBody,
+  GetBoardByTitleParams,
+  GetBoardByTitleResponse,
   GetCurrenUserBoardsResponse,
   UserFromJwt,
 } from '@v-notes/shared/api-interfaces';
@@ -35,5 +37,20 @@ export class BoardController {
     const serializedBoards = boards.map((board) => serialize(board, BoardDto));
 
     return serializedBoards;
+  }
+
+  @Get(':title')
+  async getCurrentBoardById(
+    @Param() params: GetBoardByTitleParams,
+    @CurrentUser() user: UserFromJwt
+  ): Promise<GetBoardByTitleResponse> {
+    const { title } = params;
+    const board = await this.boardService.getByTitle({
+      useremail: user.email,
+      title,
+    });
+    const serializedBoard = serialize(board, BoardDto);
+
+    return serializedBoard;
   }
 }

@@ -6,8 +6,8 @@ export class CreateBoardRequestBody {
   title!: string;
 }
 
-export type GetBoardByIdParams = {
-  id: string;
+export type GetBoardByTitleParams = {
+  title: string;
 };
 
 export class BoardDto {
@@ -16,3 +16,4 @@ export class BoardDto {
 }
 
 export type GetCurrenUserBoardsResponse = BoardDto[];
+export type GetBoardByTitleResponse = BoardDto;
