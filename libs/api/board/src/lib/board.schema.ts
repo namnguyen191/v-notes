@@ -10,8 +10,6 @@ export class Board {
   @Prop({
     type: String,
     required: [true, 'title is required'],
-    unique: [true, 'board already exists'],
-    index: { unique: true },
   })
   title!: string;
 
@@ -19,4 +17,10 @@ export class Board {
   user!: User;
 }
 
-export const BoardSchema = SchemaFactory.createForClass(Board);
+export const BoardSchema = SchemaFactory.createForClass(Board).index(
+  {
+    title: 1,
+    user: 1,
+  },
+  { unique: true }
+);
