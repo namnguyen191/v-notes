@@ -17,8 +17,8 @@ export const frontendBoardRoutes: Route[] = [
       {
         path: boardPaths.board,
         loadComponent: () =>
-          import('./components/board/board.component').then(
-            (mod) => mod.BoardComponent
+          import('./components/board-detail/board-detail.component').then(
+            (mod) => mod.BoardDetailComponent
           ),
         pathMatch: 'full',
       },

@@ -12,7 +12,7 @@ import {
   ThemeModule,
   ThemeType,
 } from 'carbon-components-angular';
-import { BoardService } from '../../services/board.service';
+import { BoardsService } from '../../services/boards.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
 
 @Component({
@@ -31,22 +31,22 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
   animations: [simpleFadeInAndOut('400ms')],
 })
 export class MainBoardComponent implements OnInit {
-  private _boardService = inject(BoardService);
+  private _boardsService = inject(BoardsService);
 
   sideNavTheme: ThemeType = 'g10';
   boardRoutes = boardRoutes;
-  currentUserBoards$ = this._boardService.currentUserBoards$;
+  currentUserBoards$ = this._boardsService.currentUserBoards$;
 
   ngOnInit(): void {
-    this._boardService.fetchCurrentUserBoards().subscribe((boards) => {
-      this._boardService.setCurrentUserBoards(boards);
+    this._boardsService.fetchCurrentUserBoards().subscribe((boards) => {
+      this._boardsService.setCurrentUserBoards(boards);
     });
   }
 
   onBoardTitleAdded(boardTitle: string): void {
-    this._boardService.createBoard(boardTitle).subscribe({
+    this._boardsService.createBoard(boardTitle).subscribe({
       next: () => {
-        this._boardService.addToCurrentUserBoards({ title: boardTitle });
+        this._boardsService.addToCurrentUserBoards({ title: boardTitle });
       },
       error: (err) => {
         // TODO: handle error

@@ -1,10 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import {
-  BoardDto,
-  CreateBoardRequestBody,
-  GetCurrenUserBoardsResponse,
-} from '@v-notes/shared/api-interfaces';
+import { BoardDto } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -18,30 +14,16 @@ export class BoardService {
 
   private readonly BOARD_API_URL = `${env.NX_API_URL}/boards`;
 
-  private _currentUserBoardsSubject$: BehaviorSubject<Board[] | undefined> =
-    new BehaviorSubject<Board[] | undefined>(undefined);
+  private _currentBoardSubject$: BehaviorSubject<Board | undefined> =
+    new BehaviorSubject<Board | undefined>(undefined);
 
-  currentUserBoards$ = this._currentUserBoardsSubject$.asObservable();
+  currentBoard$ = this._currentBoardSubject$.asObservable();
 
-  fetchCurrentUserBoards(): Observable<Board[]> {
-    return this._http.get<GetCurrenUserBoardsResponse>(this.BOARD_API_URL);
+  fetchBoardByTitle(title: string): Observable<Board> {
+    return this._http.get<Board>(`${this.BOARD_API_URL}/${title}`);
   }
 
-  createBoard(boardTitle: string): Observable<void> {
-    const body: CreateBoardRequestBody = {
-      title: boardTitle,
-    };
-    return this._http.post<void>(this.BOARD_API_URL, body);
-  }
-
-  setCurrentUserBoards(boards: Board[]): void {
-    this._currentUserBoardsSubject$.next(boards);
-  }
-
-  addToCurrentUserBoards(board: Board): void {
-    this._currentUserBoardsSubject$.next([
-      ...(this._currentUserBoardsSubject$?.value ?? []),
-      board,
-    ]);
+  setCurrentBoard(board: Board): void {
+    this._currentBoardSubject$.next(board);
   }
 }

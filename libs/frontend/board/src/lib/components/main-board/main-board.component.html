@@ -3,7 +3,7 @@
 ></lib-inline-form>
 <ng-container *ngFor="let board of currentUserBoards$ | async">
   <a
-    [routerLink]="boardRoutes.board({ id: '1' })"
+    [routerLink]="boardRoutes.board({ title: board.title })"
     [@enterAnimation]
     class="board"
   >

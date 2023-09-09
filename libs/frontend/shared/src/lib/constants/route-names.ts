@@ -10,6 +10,6 @@ export const authRoutes = generateRoutesFromPaths(authPaths, authModulePath);
 export const boardModulePath = 'board';
 export const boardPaths = {
   mainBoard: 'main-board',
-  board: ':id',
+  board: ':title',
 } as const;
 export const boardRoutes = generateRoutesFromPaths(boardPaths, boardModulePath);
