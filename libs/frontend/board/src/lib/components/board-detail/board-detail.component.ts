@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  inject,
+  inject
 } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { SocketService } from '@v-notes/frontend/shared';
@@ -16,7 +16,7 @@ import { BoardService } from '../../services/board.service';
   imports: [CommonModule],
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardDetailComponent implements OnInit {
   private readonly _boardService: BoardService = inject(BoardService);
@@ -27,22 +27,19 @@ export class BoardDetailComponent implements OnInit {
   currentBoard$ = this._boardService.currentBoard$;
 
   ngOnInit(): void {
-    const boardTitle = this._route.snapshot.paramMap.get('title');
+    const boardId = this._route.snapshot.paramMap.get('id');
 
-    if (!boardTitle) {
-      console.error('Missing board title in url parameter');
+    if (!boardId) {
+      console.error('Missing board title id url parameter');
       return;
     }
 
-    this._boardService.fetchBoardByTitle(boardTitle).subscribe({
+    this._boardService.fetchBoardById(boardId).subscribe({
       next: (board) => {
         this._boardService.setCurrentBoard(board);
 
-        this._socketService.emit(BoardSocketEvent.joinBoard, {
-          boardTitle,
-          boardOwner: 'someone',
-        });
-      },
+        this._socketService.emit(BoardSocketEvent.joinBoard, { boardId });
+      }
     });
 
     this._initializedListener();

@@ -3,14 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  inject,
+  inject
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { boardRoutes, simpleFadeInAndOut } from '@v-notes/frontend/shared';
 import {
   SideNavModule,
   ThemeModule,
-  ThemeType,
+  ThemeType
 } from 'carbon-components-angular';
 import { BoardsService } from '../../services/boards.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
@@ -23,12 +23,12 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
     SideNavModule,
     ThemeModule,
     RouterModule,
-    InlineFormComponent,
+    InlineFormComponent
   ],
   templateUrl: './main-board.component.html',
   styleUrls: ['./main-board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [simpleFadeInAndOut('400ms')],
+  animations: [simpleFadeInAndOut('400ms')]
 })
 export class MainBoardComponent implements OnInit {
   private _boardsService = inject(BoardsService);
@@ -45,13 +45,13 @@ export class MainBoardComponent implements OnInit {
 
   onBoardTitleAdded(boardTitle: string): void {
     this._boardsService.createBoard(boardTitle).subscribe({
-      next: () => {
-        this._boardsService.addToCurrentUserBoards({ title: boardTitle });
+      next: (newBoard) => {
+        this._boardsService.addToCurrentUserBoards(newBoard);
       },
       error: (err) => {
         // TODO: handle error
         console.log('Error creating board', err);
-      },
+      }
     });
   }
 }

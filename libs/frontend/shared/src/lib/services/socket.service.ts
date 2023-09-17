@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   AccessToken,
   BoardSocketEvent,
-  BoardSocketEventPayload,
+  BoardSocketEventPayload
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { Socket, io } from 'socket.io-client';
@@ -16,8 +16,8 @@ export class SocketService {
   setupSocketConnection(token: AccessToken): void {
     this._socket = io(env.NX_API_SOCKET_URL, {
       auth: {
-        token,
-      },
+        token
+      }
     });
   }
 
@@ -36,7 +36,6 @@ export class SocketService {
     if (!this._socket) {
       throw new Error('Socket connection is not established');
     }
-    console.log('Nam data is: emitting', eventName);
     this._socket.emit(eventName, payload);
   }
 }

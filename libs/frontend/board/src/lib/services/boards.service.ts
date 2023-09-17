@@ -3,7 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import {
   BoardDto,
   CreateBoardRequestBody,
-  GetCurrenUserBoardsResponse,
+  CreateBoardResponse,
+  GetCurrenUserBoardsResponse
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -27,11 +28,11 @@ export class BoardsService {
     return this._http.get<GetCurrenUserBoardsResponse>(this.BOARD_API_URL);
   }
 
-  createBoard(boardTitle: string): Observable<void> {
+  createBoard(boardTitle: string): Observable<CreateBoardResponse> {
     const body: CreateBoardRequestBody = {
-      title: boardTitle,
+      title: boardTitle
     };
-    return this._http.post<void>(this.BOARD_API_URL, body);
+    return this._http.post<CreateBoardResponse>(this.BOARD_API_URL, body);
   }
 
   setCurrentUserBoards(boards: Board[]): void {
@@ -41,7 +42,7 @@ export class BoardsService {
   addToCurrentUserBoards(board: Board): void {
     this._currentUserBoardsSubject$.next([
       ...(this._currentUserBoardsSubject$?.value ?? []),
-      board,
+      board
     ]);
   }
 }

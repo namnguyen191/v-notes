@@ -11,8 +11,8 @@ export class CreateBoardColumnRequestBody {
   title!: string;
 }
 
-export type GetBoardByTitleParams = {
-  title: string;
+export type GetBoardByIdParams = {
+  id: string;
 };
 
 export type CreateBoardColumnParams = {
@@ -22,7 +22,11 @@ export type CreateBoardColumnParams = {
 export class BoardDto {
   @Expose()
   title!: string;
+
+  @Expose()
+  id!: string;
 }
 
 export type GetCurrenUserBoardsResponse = BoardDto[];
 export type GetBoardByTitleResponse = BoardDto;
+export type CreateBoardResponse = BoardDto;

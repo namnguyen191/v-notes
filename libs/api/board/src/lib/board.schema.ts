@@ -5,11 +5,13 @@ import { HydratedDocument } from 'mongoose';
 
 export type BoardDocument = HydratedDocument<Board>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true
+})
 export class Board {
   @Prop({
     type: String,
-    required: [true, 'title is required'],
+    required: [true, 'title is required']
   })
   title!: string;
 
@@ -20,7 +22,7 @@ export class Board {
 export const BoardSchema = SchemaFactory.createForClass(Board).index(
   {
     title: 1,
-    user: 1,
+    user: 1
   },
   { unique: true }
 );

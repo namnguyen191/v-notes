@@ -7,7 +7,7 @@ import {
   SubscribeMessage,
   WebSocketGateway
 } from '@nestjs/websockets';
-import { AppWSClient, AuthWsGuard, CurrentUserWS } from '@v-notes/api/shared';
+import { AppWSClient, AuthWsGuard } from '@v-notes/api/shared';
 import {
   BoardSocketEvent,
   BoardSocketEventPayload,
@@ -41,10 +41,9 @@ export class BoardSocketGateway implements OnGatewayConnection {
   @SubscribeMessage(BoardSocketEvent.joinBoard)
   handleJoinBoard(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: BoardSocketEventPayload<BoardSocketEvent.joinBoard>,
-    @CurrentUserWS() user: UserFromJwt
+    @MessageBody() payload: BoardSocketEventPayload<BoardSocketEvent.joinBoard>
   ): void {
-    client.join(`${payload.boardOwner}-${payload.boardTitle}`);
+    client.join(payload.boardId);
   }
 
   @SubscribeMessage(BoardSocketEvent.leaveBoard)
@@ -52,6 +51,6 @@ export class BoardSocketGateway implements OnGatewayConnection {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: BoardSocketEventPayload<BoardSocketEvent.leaveBoard>
   ): void {
-    client.leave(`${payload.boardOwner}-${payload.boardTitle}`);
+    client.leave(payload.boardId);
   }
 }

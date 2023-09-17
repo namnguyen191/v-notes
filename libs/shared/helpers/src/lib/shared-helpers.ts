@@ -15,11 +15,12 @@ export const generateRoutesFromPaths = <
   return Object.entries(paths).reduce((acc, [key, val]) => {
     if (val.includes(':')) {
       const routeFn = (params: Record<string, string>) => {
+        let constructedPath = val;
         for (const [paramKey, paramVal] of Object.entries(params)) {
-          val = val.replace(`:${paramKey}`, paramVal);
+          constructedPath = constructedPath.replace(`:${paramKey}`, paramVal);
         }
 
-        return `/${modulePath}/${val}`;
+        return `/${modulePath}/${constructedPath}`;
       };
       return { ...acc, [key]: routeFn };
     }

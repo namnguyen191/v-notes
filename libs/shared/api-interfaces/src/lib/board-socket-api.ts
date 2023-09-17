@@ -1,13 +1,12 @@
 export enum BoardSocketEvent {
   joinBoard = 'joinBoard',
-  leaveBoard = 'leaveBoard',
+  leaveBoard = 'leaveBoard'
 }
 
 export type BoardSocketEventPayload<T extends BoardSocketEvent> = T extends
   | BoardSocketEvent.joinBoard
   | BoardSocketEvent.leaveBoard
   ? {
-      boardTitle: string;
-      boardOwner: string;
+      boardId: string;
     }
   : never;

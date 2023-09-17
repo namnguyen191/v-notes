@@ -21,8 +21,8 @@ export class BoardService {
 
   currentBoard$ = this._currentBoardSubject$.asObservable();
 
-  fetchBoardByTitle(title: string): Observable<Board> {
-    return this._http.get<Board>(`${this.BOARD_API_URL}/${title}`);
+  fetchBoardById(id: string): Observable<Board> {
+    return this._http.get<Board>(`${this.BOARD_API_URL}/${id}`);
   }
 
   setCurrentBoard(board: Board): void {
@@ -32,8 +32,7 @@ export class BoardService {
   leaveCurrentBoard(): void {
     this._currentBoardSubject$.next(null);
     this._socketService.emit(BoardSocketEvent.leaveBoard, {
-      boardOwner: 'someone',
-      boardTitle: this._currentBoardSubject$.getValue()?.title ?? '',
+      boardId: this._currentBoardSubject$.getValue()?.id ?? ''
     });
   }
 }

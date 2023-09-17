@@ -6,10 +6,10 @@ import {
   CreateBoardColumnParams,
   CreateBoardColumnRequestBody,
   CreateBoardRequestBody,
-  GetBoardByTitleParams,
+  GetBoardByIdParams,
   GetBoardByTitleResponse,
   GetCurrenUserBoardsResponse,
-  UserFromJwt,
+  UserFromJwt
 } from '@v-notes/shared/api-interfaces';
 import { serialize } from '@v-notes/shared/helpers';
 import { ObjectId } from 'mongoose';
@@ -28,12 +28,16 @@ export class BoardController {
   async createBoard(
     @CurrentUser() user: UserFromJwt,
     @Body() body: CreateBoardRequestBody
-  ): Promise<void> {
+  ): Promise<BoardDto> {
     const { title } = body;
-    await this.boardService.create({
+    const board = await this.boardService.create({
       title,
-      useremail: user.email,
+      useremail: user.email
     });
+
+    const serializedBoard = serialize(board, BoardDto);
+
+    return serializedBoard;
   }
 
   @Post(':boardId/columns')
@@ -46,7 +50,7 @@ export class BoardController {
     const { boardId } = params;
     await this.boardColumnService.create({
       title,
-      boardId: boardId as unknown as ObjectId,
+      boardId: boardId as unknown as ObjectId
     });
   }
 
@@ -60,16 +64,12 @@ export class BoardController {
     return serializedBoards;
   }
 
-  @Get(':title')
-  async getCurrentBoardById(
-    @Param() params: GetBoardByTitleParams,
-    @CurrentUser() user: UserFromJwt
+  @Get(':id')
+  async getBoardById(
+    @Param() params: GetBoardByIdParams
   ): Promise<GetBoardByTitleResponse> {
-    const { title } = params;
-    const board = await this.boardService.getByTitle({
-      useremail: user.email,
-      title,
-    });
+    const { id } = params;
+    const board = await this.boardService.getById(id as unknown as ObjectId);
     const serializedBoard = serialize(board, BoardDto);
 
     return serializedBoard;
