@@ -3,6 +3,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard, CurrentUser } from '@v-notes/api/shared';
 import {
   BoardDto,
+  CreateBoardColumnParams,
+  CreateBoardColumnRequestBody,
   CreateBoardRequestBody,
   GetBoardByTitleParams,
   GetBoardByTitleResponse,
@@ -10,12 +12,17 @@ import {
   UserFromJwt,
 } from '@v-notes/shared/api-interfaces';
 import { serialize } from '@v-notes/shared/helpers';
+import { ObjectId } from 'mongoose';
+import { ApiBoardColumnService } from './api-board-column.service';
 import { ApiBoardService } from './api-board.service';
 
 @Controller('boards')
 @UseGuards(AuthGuard)
 export class BoardController {
-  constructor(private readonly boardService: ApiBoardService) {}
+  constructor(
+    private readonly boardService: ApiBoardService,
+    private readonly boardColumnService: ApiBoardColumnService
+  ) {}
 
   @Post()
   async createBoard(
@@ -26,6 +33,20 @@ export class BoardController {
     await this.boardService.create({
       title,
       useremail: user.email,
+    });
+  }
+
+  @Post(':boardId/columns')
+  async createColumn(
+    @CurrentUser() user: UserFromJwt,
+    @Body() body: CreateBoardColumnRequestBody,
+    @Param() params: CreateBoardColumnParams
+  ): Promise<void> {
+    const { title } = body;
+    const { boardId } = params;
+    await this.boardColumnService.create({
+      title,
+      boardId: boardId as unknown as ObjectId,
     });
   }
 

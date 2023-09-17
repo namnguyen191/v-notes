@@ -5,7 +5,9 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { SocketService } from '@v-notes/frontend/shared';
+import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
 import { BoardService } from '../../services/board.service';
 
 @Component({
@@ -19,6 +21,8 @@ import { BoardService } from '../../services/board.service';
 export class BoardDetailComponent implements OnInit {
   private readonly _boardService: BoardService = inject(BoardService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _router: Router = inject(Router);
+  private readonly _socketService: SocketService = inject(SocketService);
 
   currentBoard$ = this._boardService.currentBoard$;
 
@@ -31,7 +35,24 @@ export class BoardDetailComponent implements OnInit {
     }
 
     this._boardService.fetchBoardByTitle(boardTitle).subscribe({
-      next: (board) => this._boardService.setCurrentBoard(board),
+      next: (board) => {
+        this._boardService.setCurrentBoard(board);
+
+        this._socketService.emit(BoardSocketEvent.joinBoard, {
+          boardTitle,
+          boardOwner: 'someone',
+        });
+      },
+    });
+
+    this._initializedListener();
+  }
+
+  private _initializedListener(): void {
+    this._router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this._boardService.leaveCurrentBoard();
+      }
     });
   }
 }

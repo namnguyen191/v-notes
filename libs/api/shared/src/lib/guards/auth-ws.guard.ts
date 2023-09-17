@@ -5,22 +5,24 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { WsException } from '@nestjs/websockets';
 import { UserFromJwt } from '@v-notes/shared/api-interfaces';
-import { Request } from 'express';
+import { AppWSClient } from '../types';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthWsGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const token = extractAuthTokenFromHeader(request);
+    const client: AppWSClient = context.switchToWs().getClient();
+    const token = extractAuthTokenFromClient(client);
     if (!token) {
-      throw new UnauthorizedException();
+      client.disconnect();
+      throw new WsException('Unauthorized');
     }
     try {
       const payload = await this.jwtService.verifyAsync<UserFromJwt>(token);
-      request.currentUser = payload;
+      client.currentUser = payload;
     } catch {
       throw new UnauthorizedException();
     }
@@ -28,7 +30,10 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-const extractAuthTokenFromHeader = (request: Request): string | undefined => {
-  const [type, token] = request.headers.authorization?.split(' ') ?? [];
-  return type === 'Bearer' ? token : undefined;
+const extractAuthTokenFromClient = (
+  client: AppWSClient
+): string | undefined => {
+  const authToken = client.handshake.auth['token'];
+
+  return authToken;
 };

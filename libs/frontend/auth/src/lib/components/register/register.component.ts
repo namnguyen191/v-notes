@@ -6,8 +6,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { authRoutes } from '@v-notes/frontend/shared';
+import { Router, RouterModule } from '@angular/router';
+import { SocketService, authRoutes } from '@v-notes/frontend/shared';
 import { isControlInvalid, matchValues } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
@@ -32,7 +32,9 @@ import { AuthService } from '../../services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-  private _authService: AuthService = inject(AuthService);
+  private readonly _authService: AuthService = inject(AuthService);
+  private readonly _router: Router = inject(Router);
+  private readonly _socketService: SocketService = inject(SocketService);
 
   isControlInvalid = isControlInvalid;
   authRoutes = authRoutes;
@@ -83,9 +85,11 @@ export class RegisterComponent {
       .subscribe({
         next: (accessToken) => {
           this._authService.setToken(accessToken);
-          this._authService
-            .fetchCurrentUser()
-            .subscribe((usr) => this._authService.setCurrentUser(usr));
+          this._socketService.setupSocketConnection(accessToken);
+          this._authService.fetchCurrentUser().subscribe((usr) => {
+            this._authService.setCurrentUser(usr);
+            this._router.navigateByUrl(`/board`);
+          });
         },
         error: (err) => {
           console.log('Something went wrong signing up user: ', err);

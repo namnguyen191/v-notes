@@ -6,16 +6,23 @@ import {
   withEnabledBlockingInitialNavigation,
 } from '@angular/router';
 import { AuthService, authInterceptor } from '@v-notes/frontend/auth';
+import { SocketService } from '@v-notes/frontend/shared';
 import { EMPTY, Observable, catchError, map } from 'rxjs';
 import { appRoutes } from './app.routes';
 
 function initializeAppFactory(
-  authService: AuthService
+  authService: AuthService,
+  socketService: SocketService
 ): () => Observable<void> {
   return () =>
     authService.fetchCurrentUser().pipe(
       map((user) => {
         authService.setCurrentUser(user);
+        const token = authService.getToken();
+        if (!token) {
+          throw new Error('failed to get token to setup socket connection');
+        }
+        socketService.setupSocketConnection(token);
       }),
       catchError(() => {
         authService.setCurrentUser(null);
@@ -32,7 +39,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
       multi: true,
-      deps: [AuthService],
+      deps: [AuthService, SocketService],
     },
     provideAnimations(),
   ],

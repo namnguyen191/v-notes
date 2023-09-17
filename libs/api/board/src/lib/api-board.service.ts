@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '@v-notes/api/users';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { Board } from './board.schema';
 
 @Injectable()
@@ -53,5 +53,19 @@ export class ApiBoardService {
     }
 
     return userBoard;
+  }
+
+  async getById(id: ObjectId): Promise<Board> {
+    try {
+      const board = await this.boardModel.findById(id);
+
+      if (!board) {
+        throw new NotFoundException();
+      }
+
+      return board;
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 }

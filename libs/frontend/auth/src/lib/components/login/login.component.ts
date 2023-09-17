@@ -13,7 +13,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { authRoutes, boardRoutes } from '@v-notes/frontend/shared';
+import {
+  SocketService,
+  authRoutes,
+  boardRoutes,
+} from '@v-notes/frontend/shared';
 import { isControlInvalid } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
@@ -41,6 +45,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   private _authService: AuthService = inject(AuthService);
   private _router: Router = inject(Router);
+  private _socketService: SocketService = inject(SocketService);
 
   isControlInvalid = isControlInvalid;
   authRoutes = authRoutes;
@@ -94,6 +99,7 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (token) => {
           this._authService.setToken(token);
+          this._socketService.setupSocketConnection(token);
           this._authService.fetchCurrentUser().subscribe((usr) => {
             this._authService.setCurrentUser(usr);
             this._router.navigateByUrl(`/board`);

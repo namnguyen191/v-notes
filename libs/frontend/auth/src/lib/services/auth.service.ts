@@ -52,6 +52,10 @@ export class AuthService {
     localStorage.setItem(userTokenKey, token);
   }
 
+  getToken(): AccessToken | null {
+    return localStorage.getItem(userTokenKey) as AccessToken;
+  }
+
   setCurrentUser(user: CurrentUser | null): void {
     this._currentUserSubject$.next(user);
   }
