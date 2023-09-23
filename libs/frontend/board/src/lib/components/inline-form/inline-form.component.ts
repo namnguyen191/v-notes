@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ElementRef,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   Renderer2,
@@ -63,8 +64,11 @@ export class InlineFormComponent implements OnInit {
     boardTitleInputElementRef.nativeElement.focus();
   }
 
+  @Input()
+  formTitle = '';
+
   @Output()
-  boardTitleAdded = new EventEmitter<string>();
+  valueSubmitted = new EventEmitter<string>();
 
   constructor() {
     this._initializeForm();
@@ -95,7 +99,7 @@ export class InlineFormComponent implements OnInit {
 
     this.isEditMode.set(false);
 
-    this.boardTitleAdded.emit(this.boardForm.controls.title.value);
+    this.valueSubmitted.emit(this.boardForm.controls.title.value);
 
     this.boardForm.reset();
   }

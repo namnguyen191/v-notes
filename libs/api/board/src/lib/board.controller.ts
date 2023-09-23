@@ -3,11 +3,14 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard, CurrentUser } from '@v-notes/api/shared';
 import {
   BoardDto,
+  ColumnDto,
   CreateBoardColumnParams,
   CreateBoardColumnRequestBody,
   CreateBoardRequestBody,
   GetBoardByIdParams,
   GetBoardByTitleResponse,
+  GetBoardColumnParams,
+  GetBoardColumnsResponse,
   GetCurrenUserBoardsResponse,
   UserFromJwt
 } from '@v-notes/shared/api-interfaces';
@@ -73,5 +76,19 @@ export class BoardController {
     const serializedBoard = serialize(board, BoardDto);
 
     return serializedBoard;
+  }
+
+  @Get(':id/columns')
+  async getBoardColumns(
+    @Param() params: GetBoardColumnParams
+  ): Promise<GetBoardColumnsResponse> {
+    const { id } = params;
+    const columns = await this.boardColumnService.getByBoardId(
+      id as unknown as ObjectId
+    );
+
+    const serializedColumns = columns.map((col) => serialize(col, ColumnDto));
+
+    return serializedColumns;
   }
 }

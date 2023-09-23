@@ -5,6 +5,7 @@ import {
   BoardSocketEventPayload
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
+import { Observable } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 
 const env: ENV_VARIABLES = process.env as ENV_VARIABLES;
@@ -37,5 +38,18 @@ export class SocketService {
       throw new Error('Socket connection is not established');
     }
     this._socket.emit(eventName, payload);
+  }
+
+  listen<T extends BoardSocketEvent>(
+    eventName: T
+  ): Observable<BoardSocketEventPayload<T>> {
+    const socket = this._socket;
+    if (!socket) {
+      throw new Error('Socket connection is not established');
+    }
+
+    return new Observable((sub) => {
+      socket.on(eventName as string, (data) => sub.next(data));
+    });
   }
 }

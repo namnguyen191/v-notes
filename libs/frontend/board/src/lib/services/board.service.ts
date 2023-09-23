@@ -4,6 +4,7 @@ import { SocketService } from '@v-notes/frontend/shared';
 import { BoardDto, BoardSocketEvent } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ColumnService } from './column.service';
 
 const env: ENV_VARIABLES = process.env as ENV_VARIABLES;
 
@@ -13,6 +14,7 @@ export type Board = BoardDto;
 export class BoardService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _socketService: SocketService = inject(SocketService);
+  private readonly _columnService: ColumnService = inject(ColumnService);
 
   private readonly BOARD_API_URL = `${env.NX_API_URL}/boards`;
 
@@ -31,6 +33,7 @@ export class BoardService {
 
   leaveCurrentBoard(): void {
     this._currentBoardSubject$.next(null);
+    this._columnService.setCurrentColumns(null);
     this._socketService.emit(BoardSocketEvent.leaveBoard, {
       boardId: this._currentBoardSubject$.getValue()?.id ?? ''
     });

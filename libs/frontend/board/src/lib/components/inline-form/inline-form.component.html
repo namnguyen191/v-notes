@@ -4,9 +4,7 @@
   [formGroup]="boardForm"
   (ngSubmit)="onSubmit()"
 >
-  <span *ngIf="!isEditMode()" class="inline-form__title"
-    >Create a new board</span
-  >
+  <span *ngIf="!isEditMode()" class="inline-form__title">{{ formTitle }}</span>
   <cds-label
     *ngIf="isEditMode()"
     class="inline-form__input"

@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { SocketService } from '@v-notes/frontend/shared';
-import { ColumnDto } from '@v-notes/shared/api-interfaces';
+import {
+  BoardSocketEvent,
+  BoardSocketEventPayload,
+  ColumnDto
+} from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -13,7 +17,6 @@ export type Column = ColumnDto;
 export class ColumnService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _socketService: SocketService = inject(SocketService);
-
   private readonly BOARD_API_URL = `${env.NX_API_URL}/boards`;
 
   private _currentColumnsSubject$: BehaviorSubject<
@@ -26,14 +29,21 @@ export class ColumnService {
     return this._http.get<Column[]>(`${this.BOARD_API_URL}/${boardId}/columns`);
   }
 
-  setCurrentColumns(columns: Column[]): void {
+  setCurrentColumns(columns: Column[] | null): void {
     this._currentColumnsSubject$.next(columns);
   }
 
-  // leaveCurrentBoard(): void {
-  //   this._currentBoardSubject$.next(null);
-  //   this._socketService.emit(BoardSocketEvent.leaveBoard, {
-  //     boardId: this._currentBoardSubject$.getValue()?.id ?? ''
-  //   });
-  // }
+  addToCurrentColumns(column: Column): void {
+    const newColumns = [
+      ...(this._currentColumnsSubject$.getValue() ?? []),
+      column
+    ];
+    this._currentColumnsSubject$.next(newColumns);
+  }
+
+  createColumn(
+    payload: BoardSocketEventPayload<BoardSocketEvent.createColumn>
+  ): void {
+    this._socketService.emit(BoardSocketEvent.createColumn, payload);
+  }
 }

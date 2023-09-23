@@ -1,3 +1,22 @@
+@use '@carbon/layout';
+@use '@carbon/colors';
+
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  padding: layout.$spacing-08;
+
+  .columns-container {
+    display: flex;
+    gap: layout.$spacing-05;
+
+    .column {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      aspect-ratio: 2 / 1;
+      width: 200px;
+      background-color: colors.$gray-20;
+    }
+  }
 }

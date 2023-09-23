@@ -15,6 +15,10 @@ export type GetBoardByIdParams = {
   id: string;
 };
 
+export type GetBoardColumnParams = {
+  id: string;
+};
+
 export type CreateBoardColumnParams = {
   boardId: string;
 };
@@ -30,6 +34,7 @@ export class BoardDto {
 export type GetCurrenUserBoardsResponse = BoardDto[];
 export type GetBoardByTitleResponse = BoardDto;
 export type CreateBoardResponse = BoardDto;
+export type GetBoardColumnsResponse = ColumnDto[];
 
 export class ColumnDto {
   @Expose()
