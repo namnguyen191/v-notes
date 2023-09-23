@@ -1,7 +1,7 @@
 <img src="assets/logo/svg/color-no-bg.svg" alt="logo" class="logo" />
 <form
-  [formGroup]="registrationForm"
   class="register-form__container"
+  [formGroup]="registrationForm"
   (ngSubmit)="onRegistrationFormSubmit()"
 >
   <h2 class="register-form__title">Register to V-Notes</h2>
@@ -13,29 +13,29 @@
       Email
       <input
         cdsText
+        required
         [size]="'md'"
         [invalid]="isControlInvalid(registrationForm.controls.email)"
         [theme]="'light'"
         [placeholder]="'john.smith@mail.com'"
         [autocomplete]="false"
         [formControl]="registrationForm.controls.email"
-        required
       />
     </cds-label>
     <cds-label
-      [invalid]="isControlInvalid(registrationForm.controls.password)"
       invalidText="Invalid password"
+      [invalid]="isControlInvalid(registrationForm.controls.password)"
     >
       Password
       <input
         type="password"
         cdsText
         size="md"
+        required
         [invalid]="isControlInvalid(registrationForm.controls.password)"
         [theme]="'light'"
         [placeholder]="'Your SIN number would be good'"
         [formControl]="registrationForm.controls.password"
-        required
       />
     </cds-label>
     <cds-label
@@ -46,6 +46,7 @@
       <input
         type="password"
         cdsText
+        required
         [size]="'md'"
         [invalid]="
           isControlInvalid(registrationForm.controls.confirmedPassword)
@@ -53,7 +54,6 @@
         [theme]="'light'"
         [placeholder]="'Same as your banking password'"
         [formControl]="registrationForm.controls.confirmedPassword"
-        required
       />
     </cds-label>
     <button cdsButton type="submit">Sign up</button>

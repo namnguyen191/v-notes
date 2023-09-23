@@ -1,3 +1,4 @@
-<ng-container *ngIf="currentBoard$ | async as currentBoard">
-  <h2>{{ currentBoard.title }}</h2>
+<ng-container *ngIf="data$ | async as data">
+  <h2>{{ data.currentBoard.title }}</h2>
+  <span *ngFor="let column of data.columns"> Column: {{ column.title }} </span>
 </ng-container>

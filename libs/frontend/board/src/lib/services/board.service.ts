@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 const env: ENV_VARIABLES = process.env as ENV_VARIABLES;
 
-type Board = BoardDto;
+export type Board = BoardDto;
 
 @Injectable({ providedIn: 'root' })
 export class BoardService {

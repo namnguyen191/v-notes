@@ -7,32 +7,32 @@ import {
   Renderer2,
   ViewChild,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 
 import {
   ChangeDetectionStrategy,
   Component,
-  HostListener,
+  HostListener
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { simpleFadeInAndOut } from '@v-notes/frontend/shared';
 import { isControlInvalid } from '@v-notes/shared/helpers';
 import { InputModule } from 'carbon-components-angular';
 
 @Component({
-  selector: 'lib-inline-form',
+  selector: 'v-notes-lib-inline-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputModule],
   templateUrl: './inline-form.component.html',
   styleUrls: ['./inline-form.component.scss'],
   animations: [simpleFadeInAndOut('250ms')],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InlineFormComponent implements OnInit {
   private _renderer2: Renderer2 = inject(Renderer2);
@@ -82,8 +82,8 @@ export class InlineFormComponent implements OnInit {
     this.boardForm = new FormGroup({
       title: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required],
-      }),
+        validators: [Validators.required]
+      })
     });
   }
 

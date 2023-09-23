@@ -1,7 +1,7 @@
 <img src="assets/logo/svg/color-no-bg.svg" alt="logo" class="logo" />
 <form
-  [formGroup]="loginForm"
   class="login-form__container"
+  [formGroup]="loginForm"
   (ngSubmit)="onLoginFormSubmit()"
 >
   <h2 class="login-form__title">Log in</h2>
@@ -13,29 +13,29 @@
       Email
       <input
         cdsText
+        required
         [size]="'md'"
         [invalid]="isControlInvalid(loginForm.controls.email)"
         [theme]="'light'"
         [placeholder]="'john.smith@mail.com'"
         [autocomplete]="false"
         [formControl]="loginForm.controls.email"
-        required
       />
     </cds-label>
     <cds-label
-      [invalid]="isControlInvalid(loginForm.controls.password)"
       invalidText="Please enter your password"
+      [invalid]="isControlInvalid(loginForm.controls.password)"
     >
       Password
       <input
         type="password"
         cdsText
         size="md"
+        required
         [invalid]="isControlInvalid(loginForm.controls.password)"
         [theme]="'light'"
         [placeholder]="'Your SIN number'"
         [formControl]="loginForm.controls.password"
-        required
       />
     </cds-label>
     <button cdsButton type="submit">Sign in</button>

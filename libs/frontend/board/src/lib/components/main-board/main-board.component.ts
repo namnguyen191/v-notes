@@ -16,7 +16,7 @@ import { BoardsService } from '../../services/boards.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
 
 @Component({
-  selector: 'lib-main-board',
+  selector: 'v-notes-lib-main-board',
   standalone: true,
   imports: [
     CommonModule,

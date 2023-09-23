@@ -1,5 +1,5 @@
 {
-  "extends": ["../../.eslintrc-angular.json"],
+  "extends": [".eslintrc.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
@@ -29,8 +29,26 @@
     },
     {
       "files": ["*.html"],
-      "extends": ["plugin:@nx/angular-template"],
-      "rules": {}
+      "extends": [
+        "plugin:@nx/angular-template",
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {
+        "@angular-eslint/template/attributes-order": [
+          "error",
+          {
+            "alphabetical": false,
+            "order": [
+              "STRUCTURAL_DIRECTIVE",
+              "TEMPLATE_REFERENCE",
+              "ATTRIBUTE_BINDING",
+              "INPUT_BINDING",
+              "TWO_WAY_BINDING",
+              "OUTPUT_BINDING"
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -1,11 +1,11 @@
-<lib-inline-form
+<v-notes-lib-inline-form
   (boardTitleAdded)="onBoardTitleAdded($event)"
-></lib-inline-form>
+></v-notes-lib-inline-form>
 <ng-container *ngFor="let board of currentUserBoards$ | async">
   <a
+    class="board"
     [routerLink]="boardRoutes.board({ id: board.id })"
     [@enterAnimation]
-    class="board"
   >
     {{ board.title }}
   </a>

@@ -5,16 +5,16 @@ import { boardRoutes } from '@v-notes/frontend/shared';
 import {
   SideNavModule,
   ThemeModule,
-  ThemeType,
+  ThemeType
 } from 'carbon-components-angular';
 
 @Component({
-  selector: 'lib-board',
+  selector: 'v-notes-lib-board',
   standalone: true,
   imports: [CommonModule, SideNavModule, ThemeModule, RouterModule],
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent {
   sideNavTheme: ThemeType = 'g10';

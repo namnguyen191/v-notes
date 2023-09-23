@@ -30,3 +30,17 @@ export class BoardDto {
 export type GetCurrenUserBoardsResponse = BoardDto[];
 export type GetBoardByTitleResponse = BoardDto;
 export type CreateBoardResponse = BoardDto;
+
+export class ColumnDto {
+  @Expose()
+  title!: string;
+
+  @Expose()
+  id!: string;
+
+  @Expose()
+  createdAt!: string;
+
+  @Expose()
+  updatedAt!: string;
+}
