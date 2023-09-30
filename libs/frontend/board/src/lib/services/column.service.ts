@@ -41,6 +41,12 @@ export class ColumnService {
     this._currentColumnsSubject$.next(newColumns);
   }
 
+  removeFromCurrentColumns(columnId: string): void {
+    const oldColumns = this._currentColumnsSubject$.getValue() ?? [];
+    const newColumns = oldColumns.filter((col) => col.id !== columnId);
+    this._currentColumnsSubject$.next(newColumns);
+  }
+
   updateCurrentColumn(updatedColumn: Column): void {
     const existingColumns = this._currentColumnsSubject$.getValue();
 
@@ -64,5 +70,11 @@ export class ColumnService {
     payload: BoardSocketEventPayload<BoardSocketEvent.updateColumn>
   ): void {
     this._socketService.emit(BoardSocketEvent.updateColumn, payload);
+  }
+
+  deleteColumn(
+    payload: BoardSocketEventPayload<BoardSocketEvent.deleteColumn>
+  ): void {
+    this._socketService.emit(BoardSocketEvent.deleteColumn, payload);
   }
 }

@@ -53,9 +53,9 @@ export class ApiBoardColumnService {
   }): Promise<BoardColumn> {
     const { id, fieldsToUpdate } = args;
 
-    const boardToUpdate = await this.boardColumnModel.findById(id);
+    const columnToUpdate = await this.boardColumnModel.findById(id);
 
-    if (!boardToUpdate) {
+    if (!columnToUpdate) {
       throw new NotFoundException();
     }
 
@@ -66,5 +66,15 @@ export class ApiBoardColumnService {
         new: true
       }
     )) as BoardColumn;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    const columnToDelete = await this.boardColumnModel.findById(id);
+
+    if (!columnToDelete) {
+      throw new NotFoundException();
+    }
+
+    await this.boardColumnModel.findByIdAndDelete(id);
   }
 }

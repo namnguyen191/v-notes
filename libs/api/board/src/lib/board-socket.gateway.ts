@@ -14,6 +14,7 @@ import {
   BoardSocketEventPayload,
   ColumnDto,
   TaskDto,
+  TypedEmit,
   UserFromJwt
 } from '@v-notes/shared/api-interfaces';
 import { serialize } from '@v-notes/shared/helpers';
@@ -26,7 +27,7 @@ import { ApiTaskService } from './api-task.service';
 @UseGuards(AuthWsGuard)
 export class BoardSocketGateway implements OnGatewayConnection {
   @WebSocketServer()
-  private readonly _server!: Socket;
+  private _server!: Socket;
 
   constructor(
     private readonly _jwtService: JwtService,
@@ -116,6 +117,23 @@ export class BoardSocketGateway implements OnGatewayConnection {
         );
     } catch (error) {
       this._server.to(boardId).emit(BoardSocketEvent.updateColumnFailure);
+    }
+  }
+
+  @SubscribeMessage(BoardSocketEvent.deleteColumn)
+  async handleDeleteColumn(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.deleteColumn>
+  ): Promise<void> {
+    const { columnId, boardId } = payload;
+    try {
+      await this._boardColumnService.deleteById(columnId);
+
+      TypedEmit(this._server)(boardId, BoardSocketEvent.deleteColumnSuccess, {
+        columnId
+      });
+    } catch (error) {
+      this._server.to(boardId).emit(BoardSocketEvent.deleteColumnFailure);
     }
   }
 

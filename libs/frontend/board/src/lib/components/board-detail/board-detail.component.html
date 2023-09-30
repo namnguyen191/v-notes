@@ -1,3 +1,33 @@
+<cds-modal
+  [open]="deleteColumnModalState().isOpen"
+  (overlaySelected)="!deleteColumnModalState()"
+>
+  <cds-modal-header [showCloseButton]="true" (closeSelect)="closeModal()">
+    <h2 cdsModalHeaderHeading>Confirmation</h2>
+  </cds-modal-header>
+  <section cdsModalContent>
+    <h3>Are you sure you want to delete this column?</h3>
+    <p cdsModalContentText>
+      This will also delete all tasks associate with it and the action is
+      irreversible
+    </p>
+  </section>
+  <cds-modal-footer>
+    <ng-container>
+      <button
+        cdsButton="secondary"
+        [attr.modal-primary-focus]="true"
+        (click)="closeModal()"
+      >
+        Cancel
+      </button>
+      <button cdsButton="danger--primary" (click)="onConfirmDeleteColumn()">
+        Confirm
+      </button>
+    </ng-container>
+  </cds-modal-footer>
+</cds-modal>
+
 <ng-container *ngIf="data$ | async as data">
   <div class="title-container">
     <h2>{{ data.currentBoard.title }}</h2>
@@ -20,6 +50,13 @@
           (valueSubmitted)="onTaskNameSubmitted($event, column.id)"
         ></v-notes-lib-inline-form>
       </div>
+      <button
+        style="align-self: flex-end"
+        cdsButton="danger--primary"
+        (click)="onDeleteColumnClick(column.id)"
+      >
+        Delete column
+      </button>
     </span>
     <v-notes-lib-inline-form
       formTitle="Enter column name"

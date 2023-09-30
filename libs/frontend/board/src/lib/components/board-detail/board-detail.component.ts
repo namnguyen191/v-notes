@@ -3,12 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  inject
+  inject,
+  signal
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { SocketService } from '@v-notes/frontend/shared';
 import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
+import { ButtonModule, ModalModule } from 'carbon-components-angular';
 import {
   Observable,
   combineLatest,
@@ -26,7 +28,13 @@ import { FilterTasksPipe } from './filter-tasks.pipe';
 @Component({
   selector: 'v-notes-lib-board-detail',
   standalone: true,
-  imports: [CommonModule, InlineFormComponent, FilterTasksPipe],
+  imports: [
+    CommonModule,
+    InlineFormComponent,
+    FilterTasksPipe,
+    ButtonModule,
+    ModalModule
+  ],
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -45,6 +53,13 @@ export class BoardDetailComponent implements OnInit {
     tasks: Task[];
   }>;
   boardId: string | null = null;
+  deleteColumnModalState = signal<{
+    isOpen: boolean;
+    columnId: string | null;
+  }>({
+    isOpen: false,
+    columnId: null
+  });
 
   constructor() {
     this.data$ = combineLatest([
@@ -150,6 +165,28 @@ export class BoardDetailComponent implements OnInit {
     });
   }
 
+  onDeleteColumnClick(columnId: string): void {
+    this.deleteColumnModalState.set({ isOpen: true, columnId });
+  }
+
+  onConfirmDeleteColumn(): void {
+    const columnId = this.deleteColumnModalState().columnId;
+
+    if (columnId && this.boardId) {
+      this._columnService.deleteColumn({ boardId: this.boardId, columnId });
+    }
+
+    this.deleteColumnModalState.set({ isOpen: false, columnId: null });
+  }
+
+  openModal() {
+    this.deleteColumnModalState.update((old) => ({ ...old, isOpen: true }));
+  }
+
+  closeModal() {
+    this.deleteColumnModalState.update((old) => ({ ...old, isOpen: false }));
+  }
+
   private _initializedListener(): void {
     this._router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -176,6 +213,14 @@ export class BoardDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed())
       .subscribe(({ column }) => {
         this._columnService.updateCurrentColumn(column);
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.deleteColumnSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ columnId }) => {
+        console.log('Nam data is: removed', columnId);
+        this._columnService.removeFromCurrentColumns(columnId);
       });
   }
 }

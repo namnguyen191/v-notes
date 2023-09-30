@@ -9,27 +9,45 @@ export enum BoardSocketEvent {
   updateColumn = 'updateColumn',
   updateColumnSuccess = 'updateColumnSuccess',
   updateColumnFailure = 'updateColumnFailure',
+  deleteColumn = 'deleteColumn',
+  deleteColumnSuccess = 'deleteColumnSuccess',
+  deleteColumnFailure = 'deleteColumnFailure',
   createTask = 'createTask',
   createTaskSuccess = 'createTaskSuccess',
   createTaskFailure = 'createTaskFailure'
 }
 
-export type BoardSocketEventPayload<T extends BoardSocketEvent> = T extends
+type BoardEventPayload<T extends BoardSocketEvent> = T extends
   | BoardSocketEvent.joinBoard
   | BoardSocketEvent.leaveBoard
   ? {
       boardId: string;
     }
-  : T extends BoardSocketEvent.createColumn
-  ? { boardId: string; columnTitle: string }
-  : T extends
-      | BoardSocketEvent.createColumnSuccess
-      | BoardSocketEvent.updateColumnSuccess
-  ? { column: ColumnDto }
-  : T extends BoardSocketEvent.updateColumn
-  ? { boardId: string; columnId: string; columnTitle: string }
-  : T extends BoardSocketEvent.createTask
-  ? { title: string; columnId: string; boardId: string }
-  : T extends BoardSocketEvent.createTaskSuccess
-  ? { task: TaskDto }
   : never;
+
+type BoardColumnEventPayload<T extends BoardSocketEvent> =
+  T extends BoardSocketEvent.createColumn
+    ? { boardId: string; columnTitle: string }
+    : T extends
+        | BoardSocketEvent.createColumnSuccess
+        | BoardSocketEvent.updateColumnSuccess
+    ? { column: ColumnDto }
+    : T extends BoardSocketEvent.updateColumn
+    ? { boardId: string; columnId: string; columnTitle: string }
+    : T extends BoardSocketEvent.deleteColumn
+    ? { boardId: string; columnId: string }
+    : T extends BoardSocketEvent.deleteColumnSuccess
+    ? { columnId: string }
+    : never;
+
+type TaskEventPayload<T extends BoardSocketEvent> =
+  T extends BoardSocketEvent.createTask
+    ? { title: string; columnId: string; boardId: string }
+    : T extends BoardSocketEvent.createTaskSuccess
+    ? { task: TaskDto }
+    : never;
+
+export type BoardSocketEventPayload<T extends BoardSocketEvent> =
+  | BoardEventPayload<T>
+  | BoardColumnEventPayload<T>
+  | TaskEventPayload<T>;
