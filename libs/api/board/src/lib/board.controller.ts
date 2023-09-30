@@ -11,20 +11,24 @@ import {
   GetBoardByTitleResponse,
   GetBoardColumnParams,
   GetBoardColumnsResponse,
+  GetColumnTaskParams,
   GetCurrenUserBoardsResponse,
+  TaskDto,
   UserFromJwt
 } from '@v-notes/shared/api-interfaces';
 import { serialize } from '@v-notes/shared/helpers';
 import { ObjectId } from 'mongoose';
 import { ApiBoardColumnService } from './api-board-column.service';
 import { ApiBoardService } from './api-board.service';
+import { ApiTaskService } from './api-task.service';
 
 @Controller('boards')
 @UseGuards(AuthGuard)
 export class BoardController {
   constructor(
     private readonly boardService: ApiBoardService,
-    private readonly boardColumnService: ApiBoardColumnService
+    private readonly boardColumnService: ApiBoardColumnService,
+    private readonly taskService: ApiTaskService
   ) {}
 
   @Post()
@@ -90,5 +94,19 @@ export class BoardController {
     const serializedColumns = columns.map((col) => serialize(col, ColumnDto));
 
     return serializedColumns;
+  }
+
+  @Get('columns/:id/tasks')
+  async getColumnTasks(
+    @Param() params: GetColumnTaskParams
+  ): Promise<GetBoardColumnsResponse> {
+    const { id } = params;
+    const tasks = await this.taskService.getByColumnId(
+      id as unknown as ObjectId
+    );
+
+    const serializedTasks = tasks.map((task) => serialize(task, TaskDto));
+
+    return serializedTasks;
   }
 }

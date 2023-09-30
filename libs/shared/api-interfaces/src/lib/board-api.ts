@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 export class CreateBoardRequestBody {
@@ -16,6 +16,10 @@ export type GetBoardByIdParams = {
 };
 
 export type GetBoardColumnParams = {
+  id: string;
+};
+
+export type GetColumnTaskParams = {
   id: string;
 };
 
@@ -42,6 +46,27 @@ export class ColumnDto {
 
   @Expose()
   id!: string;
+
+  @Expose()
+  createdAt!: string;
+
+  @Expose()
+  updatedAt!: string;
+}
+
+export class TaskDto {
+  @Expose()
+  title!: string;
+
+  @Expose()
+  id!: string;
+
+  @Expose()
+  description?: string;
+
+  @Expose()
+  @Transform((val) => val.obj['boardColumn']['_id'])
+  boardColumn!: string;
 
   @Expose()
   createdAt!: string;

@@ -1,11 +1,14 @@
-import { ColumnDto } from './board-api';
+import { ColumnDto, TaskDto } from './board-api';
 
 export enum BoardSocketEvent {
   joinBoard = 'joinBoard',
   leaveBoard = 'leaveBoard',
   createColumn = 'createColumn',
   createColumnSuccess = 'createColumnSuccess',
-  createColumnFailure = 'createColumnFailure'
+  createColumnFailure = 'createColumnFailure',
+  createTask = 'createTask',
+  createTaskSuccess = 'createTaskSuccess',
+  createTaskFailure = 'createTaskFailure'
 }
 
 export type BoardSocketEventPayload<T extends BoardSocketEvent> = T extends
@@ -18,4 +21,8 @@ export type BoardSocketEventPayload<T extends BoardSocketEvent> = T extends
   ? { boardId: string; columnTitle: string }
   : T extends BoardSocketEvent.createColumnSuccess
   ? { column: ColumnDto }
+  : T extends BoardSocketEvent.createTask
+  ? { title: string; columnId: string; boardId: string }
+  : T extends BoardSocketEvent.createTaskSuccess
+  ? { task: TaskDto }
   : never;

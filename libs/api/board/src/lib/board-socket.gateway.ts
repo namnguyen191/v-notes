@@ -13,12 +13,14 @@ import {
   BoardSocketEvent,
   BoardSocketEventPayload,
   ColumnDto,
+  TaskDto,
   UserFromJwt
 } from '@v-notes/shared/api-interfaces';
 import { serialize } from '@v-notes/shared/helpers';
 import { ObjectId } from 'mongoose';
 import { Socket } from 'socket.io';
 import { ApiBoardColumnService } from './api-board-column.service';
+import { ApiTaskService } from './api-task.service';
 
 @WebSocketGateway({ cors: true })
 @UseGuards(AuthWsGuard)
@@ -28,7 +30,8 @@ export class BoardSocketGateway implements OnGatewayConnection {
 
   constructor(
     private readonly _jwtService: JwtService,
-    private readonly _boardColumnService: ApiBoardColumnService
+    private readonly _boardColumnService: ApiBoardColumnService,
+    private readonly _taskService: ApiTaskService
   ) {}
 
   async handleConnection(client: AppWSClient) {
@@ -86,5 +89,27 @@ export class BoardSocketGateway implements OnGatewayConnection {
         BoardSocketEvent.createColumnSuccess,
         createBoardSuccessEventPayload
       );
+  }
+
+  @SubscribeMessage(BoardSocketEvent.createTask)
+  async handleCreateTask(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.createTask>
+  ): Promise<void> {
+    const { title, columnId, boardId } = payload;
+
+    const task = await this._taskService.create({
+      title,
+      columnId: columnId as unknown as ObjectId
+    });
+
+    const createTaskSuccessEventPayload: BoardSocketEventPayload<BoardSocketEvent.createTaskSuccess> =
+      {
+        task: serialize(task, TaskDto)
+      };
+
+    this._server
+      .to(boardId)
+      .emit(BoardSocketEvent.createTaskSuccess, createTaskSuccessEventPayload);
   }
 }

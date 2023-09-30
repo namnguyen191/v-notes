@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { ApiBoardService } from './api-board.service';
@@ -34,5 +34,15 @@ export class ApiBoardColumnService {
     });
 
     return columnsForBoard;
+  }
+
+  async getById(id: ObjectId): Promise<BoardColumn> {
+    const column = await this.boardColumnModel.findById(id);
+
+    if (!column) {
+      throw new NotFoundException();
+    }
+
+    return column;
   }
 }

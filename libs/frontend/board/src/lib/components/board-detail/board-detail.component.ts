@@ -9,15 +9,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { SocketService } from '@v-notes/frontend/shared';
 import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
-import { Observable, combineLatest, filter, map } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  filter,
+  forkJoin,
+  map,
+  switchMap
+} from 'rxjs';
 import { Board, BoardService } from '../../services/board.service';
 import { Column, ColumnService } from '../../services/column.service';
+import { Task, TaskService } from '../../services/task.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
+import { FilterTasksPipe } from './filter-tasks.pipe';
 
 @Component({
   selector: 'v-notes-lib-board-detail',
   standalone: true,
-  imports: [CommonModule, InlineFormComponent],
+  imports: [CommonModule, InlineFormComponent, FilterTasksPipe],
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,10 +37,12 @@ export class BoardDetailComponent implements OnInit {
   private readonly _router: Router = inject(Router);
   private readonly _socketService: SocketService = inject(SocketService);
   private readonly _columnService: ColumnService = inject(ColumnService);
+  private readonly _taskService: TaskService = inject(TaskService);
 
   data$: Observable<{
     currentBoard: Board;
     columns: Column[];
+    tasks: Task[];
   }>;
   boardId: string | null = null;
 
@@ -42,11 +53,16 @@ export class BoardDetailComponent implements OnInit {
       ),
       this._columnService.currentColumns$.pipe(
         filter((columns): columns is Column[] => !!columns)
+      ),
+      this._taskService.currentTasks$.pipe(
+        filter((tasks): tasks is Task[] => !!tasks)
       )
     ]).pipe(
-      map(([currentBoard, columns]) => ({
+      takeUntilDestroyed(),
+      map(([currentBoard, columns, tasks]) => ({
         currentBoard,
-        columns
+        columns,
+        tasks
       }))
     );
 
@@ -75,11 +91,25 @@ export class BoardDetailComponent implements OnInit {
       }
     });
 
-    this._columnService.fetchCurrentColumnsByBoardId(boardId).subscribe({
-      next: (columns) => {
-        this._columnService.setCurrentColumns(columns);
-      }
-    });
+    this._columnService
+      .fetchCurrentColumnsByBoardId(boardId)
+      .pipe(
+        switchMap((columns) => {
+          this._columnService.setCurrentColumns(columns);
+          const tasksRequests = columns.map((col) =>
+            this._taskService.fetchCurrentTasksByColumnsId(col.id)
+          );
+
+          return forkJoin(tasksRequests);
+        })
+      )
+      .subscribe({
+        next: (tasksPerColumns: Task[][]) => {
+          this._taskService.setCurrentTasks(
+            tasksPerColumns.reduce((acc, cur) => [...acc, ...cur], [])
+          );
+        }
+      });
   }
 
   onColumnNameSubmitted(columnName: string): void {
@@ -94,8 +124,21 @@ export class BoardDetailComponent implements OnInit {
     });
   }
 
+  onTaskNameSubmitted(taskName: string, columnId: string): void {
+    if (!this.boardId) {
+      console.error('Missing board title id url parameter');
+      return;
+    }
+
+    this._taskService.createTask({
+      boardId: this.boardId,
+      columnId,
+      title: taskName
+    });
+  }
+
   private _initializedListener(): void {
-    this._router.events.subscribe((event) => {
+    this._router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationStart) {
         this._boardService.leaveCurrentBoard();
       }
@@ -107,5 +150,12 @@ export class BoardDetailComponent implements OnInit {
       .subscribe(({ column }) =>
         this._columnService.addToCurrentColumns(column)
       );
+
+    this._socketService
+      .listen(BoardSocketEvent.createTaskSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ task }) => {
+        this._taskService.addToCurrentTasks(task);
+      });
   }
 }

@@ -1,1 +1,8 @@
 @use '@carbon/styles';
+@use '@carbon/type';
+
+// Include type reset
+@include type.reset();
+
+// Include default type styles, targets h1, h2, h3, etc
+@include type.default-type();
