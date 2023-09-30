@@ -77,7 +77,7 @@ export class BoardDetailComponent implements OnInit {
   private _fetchData(): void {
     const boardId = this.boardId;
     if (!boardId) {
-      console.error('Missing board title id url parameter');
+      console.error('Missing board id in url parameter');
       return;
     }
 
@@ -114,7 +114,7 @@ export class BoardDetailComponent implements OnInit {
 
   onColumnNameSubmitted(columnName: string): void {
     if (!this.boardId) {
-      console.error('Missing board title id url parameter');
+      console.error('Missing board id in url parameter');
       return;
     }
 
@@ -124,9 +124,22 @@ export class BoardDetailComponent implements OnInit {
     });
   }
 
+  onUpdatedColumnNameSubmitted(newColumnName: string, columnId: string): void {
+    if (!this.boardId) {
+      console.error('Missing board id in url parameter');
+      return;
+    }
+
+    this._columnService.updateColumn({
+      boardId: this.boardId,
+      columnId,
+      columnTitle: newColumnName
+    });
+  }
+
   onTaskNameSubmitted(taskName: string, columnId: string): void {
     if (!this.boardId) {
-      console.error('Missing board title id url parameter');
+      console.error('Missing board id in url parameter');
       return;
     }
 
@@ -156,6 +169,13 @@ export class BoardDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed())
       .subscribe(({ task }) => {
         this._taskService.addToCurrentTasks(task);
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.updateColumnSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ column }) => {
+        this._columnService.updateCurrentColumn(column);
       });
   }
 }

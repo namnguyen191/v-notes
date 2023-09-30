@@ -91,6 +91,34 @@ export class BoardSocketGateway implements OnGatewayConnection {
       );
   }
 
+  @SubscribeMessage(BoardSocketEvent.updateColumn)
+  async handleUpdateColumn(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.updateColumn>
+  ): Promise<void> {
+    const { columnId, columnTitle, boardId } = payload;
+    try {
+      const column = await this._boardColumnService.updateById({
+        id: columnId,
+        fieldsToUpdate: { title: columnTitle }
+      });
+
+      const updateColumnSuccessEventPayload: BoardSocketEventPayload<BoardSocketEvent.updateColumnSuccess> =
+        {
+          column: serialize(column, ColumnDto)
+        };
+
+      this._server
+        .to(boardId)
+        .emit(
+          BoardSocketEvent.updateColumnSuccess,
+          updateColumnSuccessEventPayload
+        );
+    } catch (error) {
+      this._server.to(boardId).emit(BoardSocketEvent.updateColumnFailure);
+    }
+  }
+
   @SubscribeMessage(BoardSocketEvent.createTask)
   async handleCreateTask(
     @MessageBody()

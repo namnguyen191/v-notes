@@ -40,8 +40,8 @@ export class InlineFormComponent implements OnInit {
   private _elementRef: ElementRef = inject(ElementRef);
 
   isControlInvalid = isControlInvalid;
-  boardForm!: FormGroup<{
-    title: FormControl<string>;
+  inlineForm!: FormGroup<{
+    value: FormControl<string>;
   }>;
   isEditMode = signal<boolean>(false);
 
@@ -52,20 +52,27 @@ export class InlineFormComponent implements OnInit {
     e.stopPropagation();
   }
 
-  private _boardTitleInput?: ElementRef<HTMLInputElement>;
-  @ViewChild('boardTitleInput')
-  set boardTitleInput(
-    boardTitleInputElementRef: ElementRef<HTMLInputElement> | undefined
+  @ViewChild('inlineFormInput')
+  set inlineFormInput(
+    inlineFormInputElementRef: ElementRef<HTMLInputElement> | undefined
   ) {
-    this._boardTitleInput = boardTitleInputElementRef;
-    if (!boardTitleInputElementRef) {
+    if (!inlineFormInputElementRef) {
       return;
     }
-    boardTitleInputElementRef.nativeElement.focus();
+    inlineFormInputElementRef.nativeElement.focus();
   }
 
   @Input()
   formTitle = '';
+
+  @Input()
+  label = '';
+
+  @Input()
+  placeHolder = 'Enter a value';
+
+  @Input()
+  invalidText = 'Please enter a value';
 
   @Output()
   valueSubmitted = new EventEmitter<string>();
@@ -83,8 +90,8 @@ export class InlineFormComponent implements OnInit {
   }
 
   private _initializeForm(): void {
-    this.boardForm = new FormGroup({
-      title: new FormControl('', {
+    this.inlineForm = new FormGroup({
+      value: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required]
       })
@@ -92,15 +99,15 @@ export class InlineFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.boardForm.markAllAsTouched();
-    if (this.boardForm.invalid) {
+    this.inlineForm.markAllAsTouched();
+    if (this.inlineForm.invalid) {
       return;
     }
 
     this.isEditMode.set(false);
 
-    this.valueSubmitted.emit(this.boardForm.controls.title.value);
+    this.valueSubmitted.emit(this.inlineForm.controls.value.value);
 
-    this.boardForm.reset();
+    this.inlineForm.reset();
   }
 }

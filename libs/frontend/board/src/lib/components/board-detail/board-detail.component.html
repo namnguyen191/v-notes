@@ -5,13 +5,17 @@
   <div class="columns-container">
     <span *ngFor="let column of data.columns" class="column">
       <div class="column__title">
-        <h3>{{ column.title }}</h3>
+        <v-notes-lib-inline-form
+          [formTitle]="column.title"
+          (valueSubmitted)="onUpdatedColumnNameSubmitted($event, column.id)"
+        ></v-notes-lib-inline-form>
       </div>
       <div class="column__tasks-container">
         <ng-container *ngFor="let task of data.tasks | filterTasks : column.id">
           <h4>{{ task.title }}</h4>
         </ng-container>
         <v-notes-lib-inline-form
+          invalidText=""
           formTitle="Enter task name"
           (valueSubmitted)="onTaskNameSubmitted($event, column.id)"
         ></v-notes-lib-inline-form>

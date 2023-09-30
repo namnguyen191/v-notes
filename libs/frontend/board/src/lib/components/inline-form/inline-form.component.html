@@ -1,7 +1,8 @@
 <form
   class="inline-form__container"
   [@enterAnimation]
-  [formGroup]="boardForm"
+  [formGroup]="inlineForm"
+  [title]="formTitle"
   (ngSubmit)="onSubmit()"
 >
   <span *ngIf="!isEditMode()" class="inline-form__title">{{ formTitle }}</span>
@@ -9,20 +10,20 @@
     *ngIf="isEditMode()"
     class="inline-form__input"
     [@enterAnimation]
-    [invalid]="isControlInvalid(boardForm.controls.title)"
-    [invalidText]="'Please enter a title'"
+    [invalid]="isControlInvalid(inlineForm.controls.value)"
+    [invalidText]="invalidText"
   >
-    Title
+    {{ label }}
     <input
-      #boardTitleInput
+      #inlineFormInput
       cdsText
       required
       [size]="'md'"
-      [invalid]="isControlInvalid(boardForm.controls.title)"
+      [invalid]="isControlInvalid(inlineForm.controls.value)"
       [theme]="'light'"
-      [placeholder]="'My title'"
+      [placeholder]="placeHolder"
       [autocomplete]="false"
-      [formControl]="boardForm.controls.title"
+      [formControl]="inlineForm.controls.value"
     />
   </cds-label>
 </form>

@@ -1,5 +1,6 @@
 <v-notes-lib-inline-form
   formTitle="Create a new board"
+  label="Title"
   (valueSubmitted)="onBoardTitleAdded($event)"
 ></v-notes-lib-inline-form>
 <ng-container *ngFor="let board of currentUserBoards$ | async">

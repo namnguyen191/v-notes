@@ -6,6 +6,9 @@ export enum BoardSocketEvent {
   createColumn = 'createColumn',
   createColumnSuccess = 'createColumnSuccess',
   createColumnFailure = 'createColumnFailure',
+  updateColumn = 'updateColumn',
+  updateColumnSuccess = 'updateColumnSuccess',
+  updateColumnFailure = 'updateColumnFailure',
   createTask = 'createTask',
   createTaskSuccess = 'createTaskSuccess',
   createTaskFailure = 'createTaskFailure'
@@ -19,8 +22,12 @@ export type BoardSocketEventPayload<T extends BoardSocketEvent> = T extends
     }
   : T extends BoardSocketEvent.createColumn
   ? { boardId: string; columnTitle: string }
-  : T extends BoardSocketEvent.createColumnSuccess
+  : T extends
+      | BoardSocketEvent.createColumnSuccess
+      | BoardSocketEvent.updateColumnSuccess
   ? { column: ColumnDto }
+  : T extends BoardSocketEvent.updateColumn
+  ? { boardId: string; columnId: string; columnTitle: string }
   : T extends BoardSocketEvent.createTask
   ? { title: string; columnId: string; boardId: string }
   : T extends BoardSocketEvent.createTaskSuccess

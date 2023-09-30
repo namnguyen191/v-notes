@@ -38,11 +38,33 @@ export class ApiBoardColumnService {
 
   async getById(id: ObjectId): Promise<BoardColumn> {
     const column = await this.boardColumnModel.findById(id);
+    this.boardColumnModel.updateOne();
 
     if (!column) {
       throw new NotFoundException();
     }
 
     return column;
+  }
+
+  async updateById(args: {
+    id: string;
+    fieldsToUpdate: Partial<BoardColumn>;
+  }): Promise<BoardColumn> {
+    const { id, fieldsToUpdate } = args;
+
+    const boardToUpdate = await this.boardColumnModel.findById(id);
+
+    if (!boardToUpdate) {
+      throw new NotFoundException();
+    }
+
+    return (await this.boardColumnModel.findByIdAndUpdate(
+      id,
+      { ...fieldsToUpdate },
+      {
+        new: true
+      }
+    )) as BoardColumn;
   }
 }

@@ -41,9 +41,28 @@ export class ColumnService {
     this._currentColumnsSubject$.next(newColumns);
   }
 
+  updateCurrentColumn(updatedColumn: Column): void {
+    const existingColumns = this._currentColumnsSubject$.getValue();
+
+    if (!existingColumns) {
+      return;
+    }
+
+    const newColumns = existingColumns.map((column) =>
+      column.id === updatedColumn.id ? updatedColumn : column
+    );
+    this._currentColumnsSubject$.next(newColumns);
+  }
+
   createColumn(
     payload: BoardSocketEventPayload<BoardSocketEvent.createColumn>
   ): void {
     this._socketService.emit(BoardSocketEvent.createColumn, payload);
+  }
+
+  updateColumn(
+    payload: BoardSocketEventPayload<BoardSocketEvent.updateColumn>
+  ): void {
+    this._socketService.emit(BoardSocketEvent.updateColumn, payload);
   }
 }
