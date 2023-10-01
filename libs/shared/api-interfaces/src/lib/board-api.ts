@@ -35,8 +35,8 @@ export class BoardDto {
   id!: string;
 
   @Expose()
-  @Transform((val) => val.obj['user']['_id'])
-  userId!: string;
+  @Transform((val) => val.obj['user']['email'])
+  userEmail!: string;
 }
 
 export type GetAllBoardsResponse = BoardDto[];

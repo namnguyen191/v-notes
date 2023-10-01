@@ -1,20 +1,23 @@
-<v-notes-lib-inline-form
-  formTitle="Create a new board"
-  label="Title"
-  (valueSubmitted)="onBoardTitleAdded($event)"
-></v-notes-lib-inline-form>
-<ng-container *ngFor="let board of currentUserBoards$ | async">
-  <a
-    class="board"
-    [routerLink]="boardRoutes.board({ id: board.id })"
-    [@enterAnimation]
-  >
-    {{ board.title }}
-    <svg
-      class="board__delete-btn"
-      cdsIcon="trash-can"
-      size="16"
-      (click)="onDeleteBoard($event,board.id)"
-    ></svg>
-  </a>
+<ng-container *ngIf="data$ | async as data">
+  <v-notes-lib-inline-form
+    formTitle="Create a new board"
+    label="Title"
+    (valueSubmitted)="onBoardTitleAdded($event)"
+  ></v-notes-lib-inline-form>
+  <ng-container *ngFor="let board of data.boards">
+    <a
+      class="board"
+      [routerLink]="boardRoutes.board({ id: board.id })"
+      [@enterAnimation]
+    >
+      {{ board.title }}
+      <svg
+        *ngIf="board.userEmail === data.currentUser.email"
+        class="board__delete-btn"
+        cdsIcon="trash-can"
+        size="16"
+        (click)="onDeleteBoard($event, board.id)"
+      ></svg>
+    </a>
+  </ng-container>
 </ng-container>

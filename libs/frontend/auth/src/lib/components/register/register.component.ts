@@ -4,17 +4,20 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { SocketService, authRoutes } from '@v-notes/frontend/shared';
+import {
+  AuthService,
+  SocketService,
+  authRoutes
+} from '@v-notes/frontend/shared';
 import { isControlInvalid, matchValues } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
   InputModule,
-  LinkModule,
+  LinkModule
 } from 'carbon-components-angular';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'v-notes-register',
@@ -25,11 +28,11 @@ import { AuthService } from '../../services/auth.service';
     InputModule,
     ReactiveFormsModule,
     RouterModule,
-    LinkModule,
+    LinkModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent {
   private readonly _authService: AuthService = inject(AuthService);
@@ -52,18 +55,18 @@ export class RegisterComponent {
   private _initializeForm(): void {
     const passwordFormControl = new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [Validators.required]
     });
     this.registrationForm = new FormGroup({
       email: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, Validators.email]
       }),
       password: passwordFormControl,
       confirmedPassword: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, matchValues(passwordFormControl)],
-      }),
+        validators: [Validators.required, matchValues(passwordFormControl)]
+      })
     });
 
     this.registrationForm.controls.password.valueChanges.subscribe(() =>
@@ -80,7 +83,7 @@ export class RegisterComponent {
     this._authService
       .signUpUser({
         email: this.registrationForm.controls.email.value,
-        password: this.registrationForm.controls.password.value,
+        password: this.registrationForm.controls.password.value
       })
       .subscribe({
         next: (accessToken) => {
@@ -93,7 +96,7 @@ export class RegisterComponent {
         },
         error: (err) => {
           console.log('Something went wrong signing up user: ', err);
-        },
+        }
       });
   }
 }

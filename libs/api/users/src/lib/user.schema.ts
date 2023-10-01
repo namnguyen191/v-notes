@@ -11,14 +11,14 @@ export class User {
     required: [true, 'email is required'],
     validate: [validator.isEmail, 'invalid email'],
     unique: [true, 'email already exist'],
-    index: { unique: true },
+    index: { unique: true }
   })
   email!: string;
 
   @Prop({
     type: String,
     required: [true, 'password is required'],
-    select: false,
+    select: false
   })
   password!: string;
 }

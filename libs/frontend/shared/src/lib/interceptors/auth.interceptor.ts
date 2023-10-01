@@ -2,10 +2,10 @@ import {
   HttpEvent,
   HttpHandlerFn,
   HttpInterceptorFn,
-  HttpRequest,
+  HttpRequest
 } from '@angular/common/http';
-import { userTokenKey } from '@v-notes/frontend/shared';
 import { Observable } from 'rxjs';
+import { userTokenKey } from '../constants/local-storage-keys';
 
 export const authInterceptor: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
@@ -15,8 +15,8 @@ export const authInterceptor: HttpInterceptorFn = (
 
   request = request.clone({
     setHeaders: {
-      Authorization: 'Bearer ' + (token ?? ''),
-    },
+      Authorization: 'Bearer ' + (token ?? '')
+    }
   });
 
   return next(request);

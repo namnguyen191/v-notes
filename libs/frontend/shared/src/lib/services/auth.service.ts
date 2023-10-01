@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { userTokenKey } from '@v-notes/frontend/shared';
 import {
   AccessToken,
   GetCurrentuserResponse,
@@ -8,12 +7,13 @@ import {
   SignInResponse,
   SignUpRequestBody,
   SignUpResponse,
-  UserFromJwt,
+  UserFromJwt
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable, map } from 'rxjs';
+import { userTokenKey } from '../constants/local-storage-keys';
 
-type CurrentUser = UserFromJwt;
+export type CurrentUser = UserFromJwt;
 
 const env: ENV_VARIABLES = process.env as ENV_VARIABLES;
 

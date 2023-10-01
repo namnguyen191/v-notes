@@ -4,28 +4,28 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  inject,
+  inject
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import {
+  AuthService,
   SocketService,
   authRoutes,
-  boardRoutes,
+  boardRoutes
 } from '@v-notes/frontend/shared';
 import { isControlInvalid } from '@v-notes/shared/helpers';
 import {
   ButtonModule,
   InputModule,
-  LinkModule,
+  LinkModule
 } from 'carbon-components-angular';
 import { take, tap } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'v-notes-login',
@@ -36,11 +36,11 @@ import { AuthService } from '../../services/auth.service';
     InputModule,
     RouterModule,
     ButtonModule,
-    LinkModule,
+    LinkModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
   private _authService: AuthService = inject(AuthService);
@@ -76,12 +76,12 @@ export class LoginComponent implements OnInit {
     this.loginForm = new FormGroup({
       email: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, Validators.email]
       }),
       password: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required],
-      }),
+        validators: [Validators.required]
+      })
     });
   }
 
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
     this._authService
       .signInUser({
         email: this.loginForm.controls.email.value,
-        password: this.loginForm.controls.password.value,
+        password: this.loginForm.controls.password.value
       })
       .subscribe({
         next: (token) => {
@@ -111,7 +111,7 @@ export class LoginComponent implements OnInit {
               console.log('Wrong credential');
             }
           }
-        },
+        }
       });
   }
 }

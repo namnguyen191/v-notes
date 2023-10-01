@@ -8,6 +8,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import {
+  AuthService,
+  CurrentUser,
   SocketService,
   boardRoutes,
   simpleFadeInAndOut
@@ -20,6 +22,8 @@ import {
   ThemeModule,
   ThemeType
 } from 'carbon-components-angular';
+import { Observable, combineLatest, filter, map } from 'rxjs';
+import { Board } from '../../services/board.service';
 import { BoardsService } from '../../services/boards.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
 
@@ -41,14 +45,28 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
   animations: [simpleFadeInAndOut('400ms')]
 })
 export class MainBoardComponent implements OnInit {
-  private _boardsService = inject(BoardsService);
+  private readonly _boardsService = inject(BoardsService);
   private readonly _socketService: SocketService = inject(SocketService);
+  private readonly _authService: AuthService = inject(AuthService);
 
   sideNavTheme: ThemeType = 'g10';
   boardRoutes = boardRoutes;
   currentUserBoards$ = this._boardsService.currentUserBoards$;
+  currentUser$ = this._authService.currentUser$;
+  data$: Observable<{
+    boards: Board[];
+    currentUser: CurrentUser;
+  }>;
 
   constructor() {
+    this.data$ = combineLatest([
+      this._boardsService.currentUserBoards$.pipe(
+        filter((boards): boards is Board[] => !!boards)
+      ),
+      this._authService.currentUser$.pipe(
+        filter((currentUser): currentUser is CurrentUser => !!currentUser)
+      )
+    ]).pipe(map(([boards, currentUser]) => ({ boards, currentUser })));
     this._initializedListener();
   }
 

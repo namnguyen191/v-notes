@@ -36,7 +36,7 @@ export class ApiBoardService {
   }
 
   async getAll(): Promise<Board[]> {
-    const boards = await this.boardModel.find();
+    const boards = await this.boardModel.find().populate('user');
     return boards;
   }
 
@@ -63,7 +63,6 @@ export class ApiBoardService {
   async getById(id: ObjectId): Promise<Board> {
     try {
       const board = await this.boardModel.findById(id);
-
       if (!board) {
         throw new NotFoundException();
       }
