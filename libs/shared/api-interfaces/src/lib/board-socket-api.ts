@@ -4,6 +4,9 @@ export enum BoardSocketEvent {
   joinBoard = 'joinBoard',
   leaveBoard = 'leaveBoard',
   createColumn = 'createColumn',
+  deleteBoard = 'deleteBoard',
+  deleteBoardSuccess = 'deleteBoardSuccess',
+  deleteBoardFailure = 'deleteBoardFailure',
   createColumnSuccess = 'createColumnSuccess',
   createColumnFailure = 'createColumnFailure',
   updateColumn = 'updateColumn',
@@ -20,6 +23,8 @@ export enum BoardSocketEvent {
 type BoardEventPayload<T extends BoardSocketEvent> = T extends
   | BoardSocketEvent.joinBoard
   | BoardSocketEvent.leaveBoard
+  | BoardSocketEvent.deleteBoard
+  | BoardSocketEvent.deleteBoardSuccess
   ? {
       boardId: string;
     }

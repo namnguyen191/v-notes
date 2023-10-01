@@ -219,7 +219,6 @@ export class BoardDetailComponent implements OnInit {
       .listen(BoardSocketEvent.deleteColumnSuccess)
       .pipe(takeUntilDestroyed())
       .subscribe(({ columnId }) => {
-        console.log('Nam data is: removed', columnId);
         this._columnService.removeFromCurrentColumns(columnId);
       });
   }

@@ -21,6 +21,7 @@ import { serialize } from '@v-notes/shared/helpers';
 import { ObjectId } from 'mongoose';
 import { Socket } from 'socket.io';
 import { ApiBoardColumnService } from './api-board-column.service';
+import { ApiBoardService } from './api-board.service';
 import { ApiTaskService } from './api-task.service';
 
 @WebSocketGateway({ cors: true })
@@ -32,7 +33,8 @@ export class BoardSocketGateway implements OnGatewayConnection {
   constructor(
     private readonly _jwtService: JwtService,
     private readonly _boardColumnService: ApiBoardColumnService,
-    private readonly _taskService: ApiTaskService
+    private readonly _taskService: ApiTaskService,
+    private readonly _boardService: ApiBoardService
   ) {}
 
   async handleConnection(client: AppWSClient) {
@@ -134,6 +136,23 @@ export class BoardSocketGateway implements OnGatewayConnection {
       });
     } catch (error) {
       this._server.to(boardId).emit(BoardSocketEvent.deleteColumnFailure);
+    }
+  }
+
+  @SubscribeMessage(BoardSocketEvent.deleteBoard)
+  async handleDeleteBoard(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.deleteBoard>
+  ): Promise<void> {
+    const { boardId } = payload;
+    try {
+      await this._boardService.deleteById(boardId);
+
+      TypedEmit(this._server)('all', BoardSocketEvent.deleteBoardSuccess, {
+        boardId
+      });
+    } catch (error) {
+      this._server.to(boardId).emit(BoardSocketEvent.deleteBoardFailure);
     }
   }
 

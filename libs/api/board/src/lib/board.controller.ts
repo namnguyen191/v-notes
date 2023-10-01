@@ -7,12 +7,12 @@ import {
   CreateBoardColumnParams,
   CreateBoardColumnRequestBody,
   CreateBoardRequestBody,
+  GetAllBoardsResponse,
   GetBoardByIdParams,
   GetBoardByTitleResponse,
   GetBoardColumnParams,
   GetBoardColumnsResponse,
   GetColumnTaskParams,
-  GetCurrenUserBoardsResponse,
   TaskDto,
   UserFromJwt
 } from '@v-notes/shared/api-interfaces';
@@ -62,10 +62,8 @@ export class BoardController {
   }
 
   @Get('')
-  async getCurrentUserBoards(
-    @CurrentUser() user: UserFromJwt
-  ): Promise<GetCurrenUserBoardsResponse> {
-    const boards = await this.boardService.getByUser(user.email);
+  async getAllBoards(): Promise<GetAllBoardsResponse> {
+    const boards = await this.boardService.getAll();
     const serializedBoards = boards.map((board) => serialize(board, BoardDto));
 
     return serializedBoards;

@@ -5,9 +5,17 @@ import {
   OnInit,
   inject
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
-import { boardRoutes, simpleFadeInAndOut } from '@v-notes/frontend/shared';
 import {
+  SocketService,
+  boardRoutes,
+  simpleFadeInAndOut
+} from '@v-notes/frontend/shared';
+import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
+import {
+  ButtonModule,
+  IconModule,
   SideNavModule,
   ThemeModule,
   ThemeType
@@ -23,7 +31,9 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
     SideNavModule,
     ThemeModule,
     RouterModule,
-    InlineFormComponent
+    InlineFormComponent,
+    ButtonModule,
+    IconModule
   ],
   templateUrl: './main-board.component.html',
   styleUrls: ['./main-board.component.scss'],
@@ -32,15 +42,26 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
 })
 export class MainBoardComponent implements OnInit {
   private _boardsService = inject(BoardsService);
+  private readonly _socketService: SocketService = inject(SocketService);
 
   sideNavTheme: ThemeType = 'g10';
   boardRoutes = boardRoutes;
   currentUserBoards$ = this._boardsService.currentUserBoards$;
 
+  constructor() {
+    this._initializedListener();
+  }
+
   ngOnInit(): void {
-    this._boardsService.fetchCurrentUserBoards().subscribe((boards) => {
+    this._boardsService.fetchAllBoards().subscribe((boards) => {
       this._boardsService.setCurrentUserBoards(boards);
     });
+  }
+
+  onDeleteBoard(e: MouseEvent, id: string) {
+    e.stopPropagation();
+    e.preventDefault();
+    this._boardsService.deleteBoard(id);
   }
 
   onBoardTitleAdded(boardTitle: string): void {
@@ -53,5 +74,14 @@ export class MainBoardComponent implements OnInit {
         console.log('Error creating board', err);
       }
     });
+  }
+
+  private _initializedListener(): void {
+    this._socketService
+      .listen(BoardSocketEvent.deleteBoardSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ boardId }) => {
+        this._boardsService.removeFromCurrentUserBoards(boardId);
+      });
   }
 }

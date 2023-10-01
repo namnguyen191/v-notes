@@ -33,8 +33,13 @@ export class BoardDto {
 
   @Expose()
   id!: string;
+
+  @Expose()
+  @Transform((val) => val.obj['user']['_id'])
+  userId!: string;
 }
 
+export type GetAllBoardsResponse = BoardDto[];
 export type GetCurrenUserBoardsResponse = BoardDto[];
 export type GetBoardByTitleResponse = BoardDto;
 export type CreateBoardResponse = BoardDto;

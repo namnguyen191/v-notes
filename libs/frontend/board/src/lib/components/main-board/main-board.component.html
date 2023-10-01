@@ -10,5 +10,11 @@
     [@enterAnimation]
   >
     {{ board.title }}
+    <svg
+      class="board__delete-btn"
+      cdsIcon="trash-can"
+      size="16"
+      (click)="onDeleteBoard($event,board.id)"
+    ></svg>
   </a>
 </ng-container>

@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { SocketService } from '@v-notes/frontend/shared';
 import {
   BoardDto,
+  BoardSocketEvent,
   CreateBoardRequestBody,
   CreateBoardResponse,
-  GetCurrenUserBoardsResponse
+  GetAllBoardsResponse
 } from '@v-notes/shared/api-interfaces';
 import { ENV_VARIABLES } from '@v-notes/shared/helpers';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -16,6 +18,7 @@ type Board = BoardDto;
 @Injectable({ providedIn: 'root' })
 export class BoardsService {
   private _http: HttpClient = inject(HttpClient);
+  private readonly _socketService: SocketService = inject(SocketService);
 
   private readonly BOARD_API_URL = `${env.NX_API_URL}/boards`;
 
@@ -24,8 +27,8 @@ export class BoardsService {
 
   currentUserBoards$ = this._currentUserBoardsSubject$.asObservable();
 
-  fetchCurrentUserBoards(): Observable<Board[]> {
-    return this._http.get<GetCurrenUserBoardsResponse>(this.BOARD_API_URL);
+  fetchAllBoards(): Observable<Board[]> {
+    return this._http.get<GetAllBoardsResponse>(this.BOARD_API_URL);
   }
 
   createBoard(boardTitle: string): Observable<CreateBoardResponse> {
@@ -33,6 +36,10 @@ export class BoardsService {
       title: boardTitle
     };
     return this._http.post<CreateBoardResponse>(this.BOARD_API_URL, body);
+  }
+
+  deleteBoard(boardId: string): void {
+    this._socketService.emit(BoardSocketEvent.deleteBoard, { boardId });
   }
 
   setCurrentUserBoards(boards: Board[]): void {
@@ -44,5 +51,13 @@ export class BoardsService {
       ...(this._currentUserBoardsSubject$?.value ?? []),
       board
     ]);
+  }
+
+  removeFromCurrentUserBoards(boardId: string): void {
+    this._currentUserBoardsSubject$.next(
+      (this._currentUserBoardsSubject$?.value ?? []).filter(
+        (board) => board.id !== boardId
+      )
+    );
   }
 }
