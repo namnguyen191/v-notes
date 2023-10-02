@@ -8,9 +8,18 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { SocketService } from '@v-notes/frontend/shared';
+import {
+  AuthService,
+  CurrentUser,
+  SocketService,
+  boardRoutes
+} from '@v-notes/frontend/shared';
 import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
-import { ButtonModule, ModalModule } from 'carbon-components-angular';
+import {
+  ButtonModule,
+  IconModule,
+  ModalModule
+} from 'carbon-components-angular';
 import {
   Observable,
   combineLatest,
@@ -20,6 +29,7 @@ import {
   switchMap
 } from 'rxjs';
 import { Board, BoardService } from '../../services/board.service';
+import { BoardsService } from '../../services/boards.service';
 import { Column, ColumnService } from '../../services/column.service';
 import { Task, TaskService } from '../../services/task.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
@@ -33,7 +43,8 @@ import { FilterTasksPipe } from './filter-tasks.pipe';
     InlineFormComponent,
     FilterTasksPipe,
     ButtonModule,
-    ModalModule
+    ModalModule,
+    IconModule
   ],
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.scss'],
@@ -41,13 +52,16 @@ import { FilterTasksPipe } from './filter-tasks.pipe';
 })
 export class BoardDetailComponent implements OnInit {
   private readonly _boardService: BoardService = inject(BoardService);
+  private readonly _boardsService: BoardsService = inject(BoardsService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _socketService: SocketService = inject(SocketService);
   private readonly _columnService: ColumnService = inject(ColumnService);
   private readonly _taskService: TaskService = inject(TaskService);
+  private readonly _authService: AuthService = inject(AuthService);
 
   data$: Observable<{
+    currentUser: CurrentUser;
     currentBoard: Board;
     columns: Column[];
     tasks: Task[];
@@ -60,9 +74,19 @@ export class BoardDetailComponent implements OnInit {
     isOpen: false,
     columnId: null
   });
+  deleteBoardModalState = signal<{
+    isOpen: boolean;
+    boardId: string | null;
+  }>({
+    isOpen: false,
+    boardId: null
+  });
 
   constructor() {
     this.data$ = combineLatest([
+      this._authService.currentUser$.pipe(
+        filter((usr): usr is CurrentUser => !!usr)
+      ),
       this._boardService.currentBoard$.pipe(
         filter((board): board is Board => !!board)
       ),
@@ -74,7 +98,8 @@ export class BoardDetailComponent implements OnInit {
       )
     ]).pipe(
       takeUntilDestroyed(),
-      map(([currentBoard, columns, tasks]) => ({
+      map(([currentUser, currentBoard, columns, tasks]) => ({
+        currentUser,
         currentBoard,
         columns,
         tasks
@@ -169,6 +194,10 @@ export class BoardDetailComponent implements OnInit {
     this.deleteColumnModalState.set({ isOpen: true, columnId });
   }
 
+  onDeleteBoardClick(boardId: string): void {
+    this.deleteBoardModalState.set({ isOpen: true, boardId });
+  }
+
   onConfirmDeleteColumn(): void {
     const columnId = this.deleteColumnModalState().columnId;
 
@@ -179,12 +208,30 @@ export class BoardDetailComponent implements OnInit {
     this.deleteColumnModalState.set({ isOpen: false, columnId: null });
   }
 
+  onConfirmDeleteBoard(): void {
+    const boardId = this.deleteBoardModalState().boardId;
+
+    if (boardId) {
+      this._boardsService.deleteBoard(boardId);
+    }
+
+    this.deleteBoardModalState.set({ isOpen: false, boardId: null });
+  }
+
   openModal() {
     this.deleteColumnModalState.update((old) => ({ ...old, isOpen: true }));
   }
 
+  openDeleteBoardModal() {
+    this.deleteBoardModalState.update((old) => ({ ...old, isOpen: true }));
+  }
+
   closeModal() {
     this.deleteColumnModalState.update((old) => ({ ...old, isOpen: false }));
+  }
+
+  closeDeleteBoardModal() {
+    this.deleteBoardModalState.update((old) => ({ ...old, isOpen: false }));
   }
 
   private _initializedListener(): void {
@@ -220,6 +267,16 @@ export class BoardDetailComponent implements OnInit {
       .pipe(takeUntilDestroyed())
       .subscribe(({ columnId }) => {
         this._columnService.removeFromCurrentColumns(columnId);
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.deleteBoardSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ boardId }) => {
+        this._boardsService.removeFromCurrentUserBoards(boardId);
+        if (this.boardId === boardId) {
+          this._router.navigateByUrl(boardRoutes.mainBoard);
+        }
       });
   }
 }

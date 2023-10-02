@@ -8,22 +8,16 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import {
-  AuthService,
-  CurrentUser,
   SocketService,
   boardRoutes,
   simpleFadeInAndOut
 } from '@v-notes/frontend/shared';
 import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
 import {
-  ButtonModule,
-  IconModule,
   SideNavModule,
   ThemeModule,
   ThemeType
 } from 'carbon-components-angular';
-import { Observable, combineLatest, filter, map } from 'rxjs';
-import { Board } from '../../services/board.service';
 import { BoardsService } from '../../services/boards.service';
 import { InlineFormComponent } from '../inline-form/inline-form.component';
 
@@ -35,9 +29,7 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
     SideNavModule,
     ThemeModule,
     RouterModule,
-    InlineFormComponent,
-    ButtonModule,
-    IconModule
+    InlineFormComponent
   ],
   templateUrl: './main-board.component.html',
   styleUrls: ['./main-board.component.scss'],
@@ -47,26 +39,12 @@ import { InlineFormComponent } from '../inline-form/inline-form.component';
 export class MainBoardComponent implements OnInit {
   private readonly _boardsService = inject(BoardsService);
   private readonly _socketService: SocketService = inject(SocketService);
-  private readonly _authService: AuthService = inject(AuthService);
 
   sideNavTheme: ThemeType = 'g10';
   boardRoutes = boardRoutes;
   currentUserBoards$ = this._boardsService.currentUserBoards$;
-  currentUser$ = this._authService.currentUser$;
-  data$: Observable<{
-    boards: Board[];
-    currentUser: CurrentUser;
-  }>;
 
   constructor() {
-    this.data$ = combineLatest([
-      this._boardsService.currentUserBoards$.pipe(
-        filter((boards): boards is Board[] => !!boards)
-      ),
-      this._authService.currentUser$.pipe(
-        filter((currentUser): currentUser is CurrentUser => !!currentUser)
-      )
-    ]).pipe(map(([boards, currentUser]) => ({ boards, currentUser })));
     this._initializedListener();
   }
 
@@ -74,12 +52,6 @@ export class MainBoardComponent implements OnInit {
     this._boardsService.fetchAllBoards().subscribe((boards) => {
       this._boardsService.setCurrentUserBoards(boards);
     });
-  }
-
-  onDeleteBoard(e: MouseEvent, id: string) {
-    e.stopPropagation();
-    e.preventDefault();
-    this._boardsService.deleteBoard(id);
   }
 
   onBoardTitleAdded(boardTitle: string): void {

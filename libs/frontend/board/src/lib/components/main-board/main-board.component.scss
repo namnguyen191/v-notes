@@ -18,16 +18,5 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-
-    &__delete-btn {
-      position: absolute;
-      top: layout.$spacing-04;
-      right: layout.$spacing-04;
-
-      &:hover {
-        background-color: rgba($color: colors.$red-80, $alpha: 0.7);
-      }
-    }
   }
 }

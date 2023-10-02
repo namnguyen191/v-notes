@@ -6,6 +6,19 @@
   display: flex;
   flex-direction: column;
   padding: layout.$spacing-08;
+  gap: layout.$spacing-04;
+
+  .title-container {
+    display: flex;
+
+    ::ng-deep {
+      .inline-form__container {
+        height: 48px;
+        background-color: colors.$purple-60;
+        color: colors.$white;
+      }
+    }
+  }
 
   .columns-container {
     display: flex;
