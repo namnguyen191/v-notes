@@ -86,4 +86,22 @@ export class ApiBoardService {
       throw new NotFoundException();
     }
   }
+
+  async updateById(id: string, newTitle: string): Promise<Board> {
+    try {
+      const board = await this.boardModel.findById(id);
+
+      if (!board) {
+        throw new NotFoundException();
+      }
+
+      const updateBoard = await this.boardModel
+        .findByIdAndUpdate(id, { title: newTitle }, { new: true })
+        .populate('user');
+
+      return updateBoard as Board;
+    } catch (error) {
+      throw new NotFoundException();
+    }
+  }
 }

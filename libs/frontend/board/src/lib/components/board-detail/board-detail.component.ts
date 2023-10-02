@@ -26,6 +26,7 @@ import {
   filter,
   forkJoin,
   map,
+  of,
   switchMap
 } from 'rxjs';
 import { Board, BoardService } from '../../services/board.service';
@@ -140,6 +141,10 @@ export class BoardDetailComponent implements OnInit {
             this._taskService.fetchCurrentTasksByColumnsId(col.id)
           );
 
+          if (!tasksRequests.length) {
+            return of([]);
+          }
+
           return forkJoin(tasksRequests);
         })
       )
@@ -150,6 +155,14 @@ export class BoardDetailComponent implements OnInit {
           );
         }
       });
+  }
+
+  onNewBoardTitleSubmitted(newBoardTitle: string): void {
+    if (!this.boardId) {
+      return;
+    }
+
+    this._boardsService.updateBoard(this.boardId, newBoardTitle);
   }
 
   onColumnNameSubmitted(columnName: string): void {
@@ -277,6 +290,14 @@ export class BoardDetailComponent implements OnInit {
         if (this.boardId === boardId) {
           this._router.navigateByUrl(boardRoutes.mainBoard);
         }
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.updateBoardSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ board }) => {
+        this._boardsService.updateOneInCurrentUserBoards(board);
+        this._boardService.setCurrentBoard(board);
       });
   }
 }

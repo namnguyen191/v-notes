@@ -42,6 +42,13 @@ export class BoardsService {
     this._socketService.emit(BoardSocketEvent.deleteBoard, { boardId });
   }
 
+  updateBoard(boardId: string, newTitle: string): void {
+    this._socketService.emit(BoardSocketEvent.updateBoard, {
+      boardId,
+      newTitle
+    });
+  }
+
   setCurrentUserBoards(boards: Board[]): void {
     this._currentUserBoardsSubject$.next(boards);
   }
@@ -57,6 +64,14 @@ export class BoardsService {
     this._currentUserBoardsSubject$.next(
       (this._currentUserBoardsSubject$?.value ?? []).filter(
         (board) => board.id !== boardId
+      )
+    );
+  }
+
+  updateOneInCurrentUserBoards(newBoard: Board): void {
+    this._currentUserBoardsSubject$.next(
+      (this._currentUserBoardsSubject$?.value ?? []).map((board) =>
+        board.id === newBoard.id ? newBoard : board
       )
     );
   }

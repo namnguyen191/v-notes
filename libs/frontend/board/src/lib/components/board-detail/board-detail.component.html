@@ -1,6 +1,10 @@
 <ng-container *ngIf="data$ | async as data">
   <div class="title-container">
-    <v-notes-lib-inline-form [formTitle]="data.currentBoard.title">
+    <v-notes-lib-inline-form
+      placeHolder="Enter new title"
+      [formTitle]="data.currentBoard.title"
+      (valueSubmitted)="onNewBoardTitleSubmitted($event)"
+    >
     </v-notes-lib-inline-form>
     <cds-icon-button
       kind="danger--primary"

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { AppWSClient, AuthWsGuard } from '@v-notes/api/shared';
 import {
+  BoardDto,
   BoardSocketEvent,
   BoardSocketEventPayload,
   ColumnDto,
@@ -69,6 +70,28 @@ export class BoardSocketGateway implements OnGatewayConnection {
     @MessageBody() payload: BoardSocketEventPayload<BoardSocketEvent.leaveBoard>
   ): void {
     client.leave(payload.boardId);
+  }
+
+  @SubscribeMessage(BoardSocketEvent.updateBoard)
+  async handleUpdateBoard(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.updateBoard>
+  ): Promise<void> {
+    const { boardId, newTitle } = payload;
+
+    try {
+      const updatedBoard = await this._boardService.updateById(
+        boardId,
+        newTitle
+      );
+
+      TypedEmit(this._server)(boardId, BoardSocketEvent.updateBoardSuccess, {
+        board: serialize(updatedBoard, BoardDto)
+      });
+    } catch (error) {
+      TypedEmit(this._server)(boardId, BoardSocketEvent.updateBoardFailure);
+    }
   }
 
   @SubscribeMessage(BoardSocketEvent.createColumn)
