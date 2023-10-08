@@ -24,7 +24,12 @@
       </div>
       <div class="column__tasks-container">
         <ng-container *ngFor="let task of data.tasks | filterTasks : column.id">
-          <h4>{{ task.title }}</h4>
+          <a
+            class="board"
+            [routerLink]="'.' + taskRoutes.task({ id: task.id })"
+          >
+            <h4>{{ task.title }}</h4>
+          </a>
         </ng-container>
         <v-notes-lib-inline-form
           invalidText=""
@@ -47,9 +52,11 @@
   </div>
 </ng-container>
 
+<router-outlet></router-outlet>
+
 <cds-modal
   [open]="deleteColumnModalState().isOpen"
-  (overlaySelected)="!deleteColumnModalState().isOpen"
+  (overlaySelected)="closeModal()"
 >
   <cds-modal-header [showCloseButton]="true" (closeSelect)="closeModal()">
     <h2 cdsModalHeaderHeading>Confirmation</h2>
@@ -79,7 +86,7 @@
 
 <cds-modal
   [open]="deleteBoardModalState().isOpen"
-  (overlaySelected)="!deleteBoardModalState().isOpen"
+  (overlaySelected)="closeDeleteBoardModal()"
 >
   <cds-modal-header
     [showCloseButton]="true"

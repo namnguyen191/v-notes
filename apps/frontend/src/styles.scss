@@ -6,3 +6,12 @@
 
 // Include default type styles, targets h1, h2, h3, etc
 @include type.default-type();
+
+:root {
+  --app-bar-height: 48px;
+  --full-body-height: calc(100vh - 48px);
+}
+
+body {
+  padding-top: var(--app-bar-height);
+}

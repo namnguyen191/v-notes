@@ -2,17 +2,19 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
   inject,
   signal
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   AuthService,
   CurrentUser,
   SocketService,
-  boardRoutes
+  boardRoutes,
+  taskRoutes
 } from '@v-notes/frontend/shared';
 import { BoardSocketEvent } from '@v-notes/shared/api-interfaces';
 import {
@@ -45,13 +47,14 @@ import { FilterTasksPipe } from './filter-tasks.pipe';
     FilterTasksPipe,
     ButtonModule,
     ModalModule,
-    IconModule
+    IconModule,
+    RouterModule
   ],
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardDetailComponent implements OnInit {
+export class BoardDetailComponent implements OnInit, OnDestroy {
   private readonly _boardService: BoardService = inject(BoardService);
   private readonly _boardsService: BoardsService = inject(BoardsService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
@@ -61,6 +64,7 @@ export class BoardDetailComponent implements OnInit {
   private readonly _taskService: TaskService = inject(TaskService);
   private readonly _authService: AuthService = inject(AuthService);
 
+  taskRoutes = taskRoutes;
   data$: Observable<{
     currentUser: CurrentUser;
     currentBoard: Board;
@@ -108,6 +112,9 @@ export class BoardDetailComponent implements OnInit {
     );
 
     this._initializedListener();
+  }
+  ngOnDestroy(): void {
+    this._boardService.leaveCurrentBoard();
   }
 
   ngOnInit(): void {
@@ -248,12 +255,6 @@ export class BoardDetailComponent implements OnInit {
   }
 
   private _initializedListener(): void {
-    this._router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this._boardService.leaveCurrentBoard();
-      }
-    });
-
     this._socketService
       .listen(BoardSocketEvent.createColumnSuccess)
       .pipe(takeUntilDestroyed())
@@ -298,6 +299,20 @@ export class BoardDetailComponent implements OnInit {
       .subscribe(({ board }) => {
         this._boardsService.updateOneInCurrentUserBoards(board);
         this._boardService.setCurrentBoard(board);
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.updateTaskSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ task }) => {
+        this._taskService.updateOneInCurrentTasks(task);
+      });
+
+    this._socketService
+      .listen(BoardSocketEvent.deleteTaskSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ taskId }) => {
+        this._taskService.removeOneInCurrentTasks(taskId);
       });
   }
 }

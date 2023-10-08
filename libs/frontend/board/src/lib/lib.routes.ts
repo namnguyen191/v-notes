@@ -1,5 +1,9 @@
 import { Route } from '@angular/router';
-import { boardPaths } from '@v-notes/frontend/shared';
+import {
+  boardPaths,
+  taskModulePath,
+  taskPaths
+} from '@v-notes/frontend/shared';
 import { BoardComponent } from './board.component';
 
 export const frontendBoardRoutes: Route[] = [
@@ -12,7 +16,7 @@ export const frontendBoardRoutes: Route[] = [
         loadComponent: () =>
           import('./components/main-board/main-board.component').then(
             (mod) => mod.MainBoardComponent
-          ),
+          )
       },
       {
         path: boardPaths.board,
@@ -20,18 +24,26 @@ export const frontendBoardRoutes: Route[] = [
           import('./components/board-detail/board-detail.component').then(
             (mod) => mod.BoardDetailComponent
           ),
-        pathMatch: 'full',
+        children: [
+          {
+            path: `${taskModulePath}/${taskPaths.task}`,
+            loadComponent: () =>
+              import('./components/task/task.component').then(
+                (mod) => mod.TaskComponent
+              )
+          }
+        ]
       },
       {
         path: '**',
         redirectTo: boardPaths.mainBoard,
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: '**',
     redirectTo: '',
-    pathMatch: 'full',
-  },
+    pathMatch: 'full'
+  }
 ];

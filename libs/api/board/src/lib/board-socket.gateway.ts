@@ -24,6 +24,7 @@ import { Socket } from 'socket.io';
 import { ApiBoardColumnService } from './api-board-column.service';
 import { ApiBoardService } from './api-board.service';
 import { ApiTaskService } from './api-task.service';
+import { BoardColumn } from './board-column.schema';
 
 @WebSocketGateway({ cors: true })
 @UseGuards(AuthWsGuard)
@@ -199,5 +200,59 @@ export class BoardSocketGateway implements OnGatewayConnection {
     this._server
       .to(boardId)
       .emit(BoardSocketEvent.createTaskSuccess, createTaskSuccessEventPayload);
+  }
+
+  @SubscribeMessage(BoardSocketEvent.updateTask)
+  async handleUpdateTask(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.updateTask>
+  ): Promise<void> {
+    const { newTitle, newDescription, newColumn, taskId, boardId } = payload;
+
+    let newColumnToUpdateTo: BoardColumn | undefined = undefined;
+    if (newColumn) {
+      newColumnToUpdateTo = await this._boardColumnService.getById(
+        newColumn as unknown as ObjectId
+      );
+    }
+
+    try {
+      const task = await this._taskService.updateById(taskId, {
+        title: newTitle,
+        description: newDescription,
+        boardColumn: newColumnToUpdateTo
+      });
+
+      const updateTaskSuccessEventPayload: BoardSocketEventPayload<BoardSocketEvent.updateTaskSuccess> =
+        {
+          task: serialize(task, TaskDto)
+        };
+
+      TypedEmit(this._server)(
+        boardId,
+        BoardSocketEvent.updateTaskSuccess,
+        updateTaskSuccessEventPayload
+      );
+    } catch (error) {
+      TypedEmit(this._server)(boardId, BoardSocketEvent.updateTaskFailure);
+    }
+  }
+
+  @SubscribeMessage(BoardSocketEvent.deleteTask)
+  async handleDeleteTask(
+    @MessageBody()
+    payload: BoardSocketEventPayload<BoardSocketEvent.deleteTask>
+  ): Promise<void> {
+    const { taskId, boardId } = payload;
+
+    try {
+      await this._taskService.deleteById(taskId);
+
+      TypedEmit(this._server)(boardId, BoardSocketEvent.deleteTaskSuccess, {
+        taskId
+      });
+    } catch (error) {
+      TypedEmit(this._server)(boardId, BoardSocketEvent.deleteTaskFailure);
+    }
   }
 }

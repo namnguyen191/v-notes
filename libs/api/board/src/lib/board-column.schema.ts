@@ -9,7 +9,7 @@ export type BoardColumnDocument = HydratedDocument<BoardColumn>;
 export class BoardColumn {
   @Prop({
     type: String,
-    required: [true, 'title is required'],
+    required: [true, 'title is required']
   })
   title!: string;
 
@@ -17,4 +17,6 @@ export class BoardColumn {
   board!: Board;
 }
 
-export const BoardColumnSchema = SchemaFactory.createForClass(BoardColumn);
+export const BoardColumnSchema = SchemaFactory.createForClass(
+  BoardColumn
+).index({ title: 1, board: 1 }, { unique: true });

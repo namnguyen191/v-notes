@@ -39,9 +39,39 @@ export class TaskService {
     this._currentTasksSubject$.next(newTasks);
   }
 
+  updateOneInCurrentTasks(updatedTask: Task): void {
+    const oldTasks = this._currentTasksSubject$.getValue() ?? [];
+
+    const newTasks = oldTasks.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
+    );
+
+    this._currentTasksSubject$.next(newTasks);
+  }
+
+  removeOneInCurrentTasks(id: string): void {
+    const oldTasks = this._currentTasksSubject$.getValue() ?? [];
+
+    const newTasks = oldTasks.filter((task) => task.id !== id);
+
+    this._currentTasksSubject$.next(newTasks);
+  }
+
   createTask(
     payload: BoardSocketEventPayload<BoardSocketEvent.createTask>
   ): void {
     this._socketService.emit(BoardSocketEvent.createTask, payload);
+  }
+
+  updateTask(
+    payload: BoardSocketEventPayload<BoardSocketEvent.updateTask>
+  ): void {
+    this._socketService.emit(BoardSocketEvent.updateTask, payload);
+  }
+
+  deleteTask(
+    payload: BoardSocketEventPayload<BoardSocketEvent.deleteTask>
+  ): void {
+    this._socketService.emit(BoardSocketEvent.deleteTask, payload);
   }
 }

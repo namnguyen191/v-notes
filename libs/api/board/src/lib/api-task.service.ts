@@ -42,4 +42,56 @@ export class ApiTaskService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getById(id: string): Promise<Task> {
+    try {
+      const task = await this.taskModel.findById(id);
+
+      if (!task) {
+        throw new NotFoundException();
+      }
+
+      return task;
+    } catch (error) {
+      if (error instanceof MongooseError.CastError) {
+        throw new NotFoundException();
+      }
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateById(id: string, fieldsToUpdate: Partial<Task>): Promise<Task> {
+    try {
+      const updatedTask = await this.taskModel.findByIdAndUpdate(
+        id,
+        { ...fieldsToUpdate },
+        { new: true }
+      );
+
+      if (!updatedTask) {
+        throw new NotFoundException();
+      }
+
+      return updatedTask;
+    } catch (error) {
+      if (error instanceof MongooseError.CastError) {
+        throw new NotFoundException();
+      }
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.taskModel.findByIdAndDelete(id);
+    } catch (error) {
+      if (error instanceof MongooseError.CastError) {
+        throw new NotFoundException();
+      }
+
+      throw new InternalServerErrorException();
+    }
+  }
 }

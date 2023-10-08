@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: var(--full-body-height);
   background-color: colors.$blue-30;
 
   .logo {

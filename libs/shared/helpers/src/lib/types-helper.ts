@@ -35,6 +35,6 @@ export type RoutesFromPath<
         TParams extends ExtractParamsFromRoute<TPaths[k], TParamsValue>
       >(
         params: TParams
-      ) => RouteFromParamsMap<TPaths[k], TParams>
+      ) => `/${TRoute}/${RouteFromParamsMap<TPaths[k], TParams>}`
     : `/${TRoute}/${TPaths[k]}`;
 };

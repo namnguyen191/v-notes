@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, mongo } from 'mongoose';
 import { ApiBoardService } from './api-board.service';
 import { BoardColumn } from './board-column.schema';
 
@@ -19,11 +25,26 @@ export class ApiBoardColumnService {
     const { boardId, title } = boardColumn;
     const board = await this.boardService.getById(boardId);
 
-    const createdBoardColumn = new this.boardColumnModel({
-      title,
-      board
-    });
-    return createdBoardColumn.save();
+    try {
+      const createdBoardColumn = new this.boardColumnModel({
+        title,
+        board
+      });
+      const newBoardColumn = await createdBoardColumn.save();
+      return newBoardColumn;
+    } catch (error) {
+      if (error instanceof mongo.MongoServerError) {
+        if (error.code === 'E11000') {
+          throw new ConflictException();
+        } else {
+          Logger.error('An unknown mongodb error has occured: ', error);
+          throw new InternalServerErrorException();
+        }
+      } else {
+        Logger.error('An unknown error has occured: ', error);
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async getByBoardId(boardId: ObjectId): Promise<BoardColumn[]> {

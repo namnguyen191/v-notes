@@ -18,6 +18,12 @@ export enum BoardSocketEvent {
   deleteColumn = 'deleteColumn',
   deleteColumnSuccess = 'deleteColumnSuccess',
   deleteColumnFailure = 'deleteColumnFailure',
+  updateTask = 'updateTask',
+  updateTaskSuccess = 'updateTaskSuccess',
+  updateTaskFailure = 'updateTaskFailure',
+  deleteTask = 'deleteTask',
+  deleteTaskSuccess = 'deleteTaskSuccess',
+  deleteTaskFailure = 'deleteTaskFailure',
   createTask = 'createTask',
   createTaskSuccess = 'createTaskSuccess',
   createTaskFailure = 'createTaskFailure'
@@ -60,8 +66,27 @@ type BoardColumnEventPayload<T extends BoardSocketEvent> =
 type TaskEventPayload<T extends BoardSocketEvent> =
   T extends BoardSocketEvent.createTask
     ? { title: string; columnId: string; boardId: string }
-    : T extends BoardSocketEvent.createTaskSuccess
+    : T extends
+        | BoardSocketEvent.createTaskSuccess
+        | BoardSocketEvent.updateTaskSuccess
     ? { task: TaskDto }
+    : T extends BoardSocketEvent.updateTask
+    ? {
+        taskId: string;
+        boardId: string;
+        newTitle?: string;
+        newDescription?: string;
+        newColumn?: string;
+      }
+    : T extends BoardSocketEvent.deleteTask
+    ? {
+        taskId: string;
+        boardId: string;
+      }
+    : T extends BoardSocketEvent.deleteTaskSuccess
+    ? {
+        taskId: string;
+      }
     : never;
 
 export type BoardSocketEventPayload<T extends BoardSocketEvent> =
