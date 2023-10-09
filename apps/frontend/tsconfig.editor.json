@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "../../libs/api/core/src/lib/app.routes.ts"],
-  "compilerOptions": {
-    "types": ["jest", "node"]
-  }
-}
