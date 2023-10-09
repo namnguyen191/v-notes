@@ -26,7 +26,7 @@
         "libs/shared/api-interfaces/src/index.ts"
       ],
       "@v-notes/shared/helpers": ["libs/shared/helpers/src/index.ts"],
-      "api/board": ["libs/api/board/src/index.ts"]
+      "@v-notes/api/board": ["libs/api/board/src/index.ts"]
     },
     "strict": true
   },

@@ -13,7 +13,7 @@ import { AppModule } from './app/app.module';
 const requiredEnvs = new Set<string>([
   'DATABASE_USER',
   'DATABASE_PASSWORD',
-  'JWT_SECRETS',
+  'JWT_SECRETS'
 ]);
 
 async function bootstrap() {
@@ -24,7 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: true
     })
   );
 
@@ -41,6 +41,7 @@ async function bootstrap() {
 
 requiredEnvs.forEach((env) => {
   if (!process.env[env]) {
+    console.log(`Missing env: ${JSON.stringify(process.env)}`);
     console.log(`Missing env variable ${env}`);
     exit(1);
   }
