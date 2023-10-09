@@ -33,7 +33,7 @@ jobs:
         run: npx nx run backend:build:production
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: dist/apps/frontend
