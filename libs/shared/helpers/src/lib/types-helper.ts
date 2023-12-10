@@ -27,7 +27,7 @@ type RouteFromParamsMap<
 
 export type RoutesFromPath<
   TPaths extends Record<string, string>,
-  TRoute extends string
+  TModulePath extends string
 > = {
   [k in keyof TPaths]: TPaths[k] extends `${string}:${string}`
     ? <
@@ -35,6 +35,8 @@ export type RoutesFromPath<
         TParams extends ExtractParamsFromRoute<TPaths[k], TParamsValue>
       >(
         params: TParams
-      ) => `/${TRoute}/${RouteFromParamsMap<TPaths[k], TParams>}`
-    : `/${TRoute}/${TPaths[k]}`;
+      ) => `${TModulePath extends ''
+        ? ''
+        : `/${TModulePath}`}/${RouteFromParamsMap<TPaths[k], TParams>}`
+    : `${TModulePath extends '' ? '' : `/${TModulePath}`}/${TPaths[k]}`;
 };

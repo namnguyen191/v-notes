@@ -20,10 +20,10 @@ export const generateRoutesFromPaths = <
           constructedPath = constructedPath.replace(`:${paramKey}`, paramVal);
         }
 
-        return `/${modulePath}/${constructedPath}`;
+        return `${modulePath ? '/' + modulePath : ''}/${constructedPath}`;
       };
       return { ...acc, [key]: routeFn };
     }
-    return { ...acc, [key]: `/${modulePath}/${val}` };
+    return { ...acc, [key]: `${modulePath ? '/' + modulePath : ''}/${val}` };
   }, {}) as RoutesFromPath<TPaths, TModulePath>;
 };
